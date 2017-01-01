@@ -1,0 +1,13 @@
+.sidebar .sidebar-menu > li > a  {
+    font-size: 13px !important; 
+    font-weight: bold;
+}
+
+.sidebar .sidebar-menu > li > li > a  {
+    font-size: 13px;     
+}
+
+.tooltip-inner {
+    max-width: none;
+    white-space: nowrap;
+}
