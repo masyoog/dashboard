@@ -88,7 +88,7 @@ class Pengeluaran extends MY_Controller {
         $this->_CFG->add_column("Tanggal", $nama);
         
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat Oleh", $nama);
         
         $dg->set_config($this->_CFG);
         
