@@ -11,23 +11,23 @@
  *
  * @author Yoga Mahendra
  */
-class Detil_pembelian extends MY_Controller {
+class Detil_retur extends MY_Controller {
 
     private $_CFG;
-    private $_TBL_PRIMARY = "purchase_order_details a";
-    private $_TBL_PRIMARY_PK = "a.purchase_order_detail_id";
+    private $_TBL_PRIMARY = "retur_details a";
+    private $_TBL_PRIMARY_PK = "a.retur_detail_id";
     private $_ORDER = array();
     private $_ITEM_PER_PAGE = "";
     private $_TBL_JOIN = array(
-        "product c" => "c.id=a.product_id"        
+        "product c" => "c.id=a.product_id"
     );
     private $_INDEX_PAGE;
 
     function __construct() {
         parent::__construct();
-        
+
         $this->_INDEX_PAGE = $this->uri->segment(1) . "/" . $this->uri->segment(2);
-        
+
         $this->_CFG = new Datagridconfig();
         $this->_CFG->set_KEYS($this->_TBL_PRIMARY_PK);
         $this->_CFG->set_PRIMARY_TBL($this->_TBL_PRIMARY);
@@ -48,13 +48,13 @@ class Detil_pembelian extends MY_Controller {
         $grupUser->set_FORM_ID("description");
         $this->_CFG->add_column("Description", $grupUser);
 
-        $userName = new Datagridcolumn();
-        $userName->set_FIELD_DB("a.item_price");
-        $userName->set_SIZE(9);
-        $userName->set_FORM_ID("item_price");
-        $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
-        $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Item Price", $userName);
+//        $userName = new Datagridcolumn();
+//        $userName->set_FIELD_DB("a.item_price");
+//        $userName->set_SIZE(9);
+//        $userName->set_FORM_ID("item_price");
+//        $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
+//        $userName->set_REQUIRED(TRUE);
+//        $this->_CFG->add_column("Item Price", $userName);
 
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.qty");
@@ -63,26 +63,27 @@ class Detil_pembelian extends MY_Controller {
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
         $this->_CFG->add_column("Qty", $userName);
-        
-        $userName = new Datagridcolumn();
-        $userName->set_FIELD_DB("a.total_price");
-        $userName->set_SIZE(12);
-        $userName->set_FORM_ID("total_price");
-        $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
-        $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Total Price", $userName);
+
+//        $userName = new Datagridcolumn();
+//        $userName->set_FIELD_DB("a.total_price");
+//        $userName->set_SIZE(12);
+//        $userName->set_FORM_ID("total_price");
+//        $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
+//        $userName->set_REQUIRED(TRUE);
+//        $this->_CFG->add_column("Total Price", $userName);
+        $this->_CFG->add_grid_button("UBAH", array());
     }
 
     function index($id_po = "null") {
         $data = array();
         $whr = array();
         $this->session->set_userdata(array(md5(__FILE__ . "id_po") => $id_po));
-        
+
         if ($id_po != "null") {
-            $whr = $whr + array("a.purchase_order_id" => intval($id_po));
+            $whr = $whr + array("a.retur_id" => intval($id_po));
         }
 
-        
+
         //initiate datagrid
         $dg = new Datagrid();
         if (count($whr) > 0) {
@@ -153,31 +154,19 @@ class Detil_pembelian extends MY_Controller {
             }
         }
 
-        
+
         $this->_CFG->add_COMMAND_BUTTON(
                 "BATAL", array(
             "type" => "button",
             "name" => "cancel",
             "style" => "",
             "class" => "btn-danger cancelFormBtn",
-            "action" => "window.location.href='" . base_url(_replace_after($this->uri->uri_string, "form") . "index/". $id_supplier."/null/") . _build_query_string($this->_get_query_string()) . "'"
+            "action" => "window.location.href='" . base_url(_replace_after($this->uri->uri_string, "form") . "index/" . $id_supplier . "/null/") . _build_query_string($this->_get_query_string()) . "'"
         ));
         //initiate datagrid
         $data["pages"] = $dg->render_form($mode, $key, $errorMsg, TRUE);
         $data["isWindowPopUp"] = TRUE;
-        $addScript = 'function calculate(){'
-                . 'var price = $("#item_price").unmask();'
-                . 'var qty = $("#qty").unmask();'
-                . 'console.log(qty);'
-                . 'console.log(price);'                
-                . 'var total = price * qty;'                
-                . '$("#total_price").val(total);'
-                . '}'
-                . ''
-                . '$("#item_price, #qty").blur(function(){'                
-                . 'calculate();'
-                . '})';
-        $dg->set_ADDITIONAL_SCRIPT($addScript);
+      
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
 
@@ -191,7 +180,7 @@ class Detil_pembelian extends MY_Controller {
         $id_supplier = $this->session->userdata(md5(__FILE__ . "id_po"));
         $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
 
-        $datas = array("purchase_order_id" => $id_supplier);
+        $datas = array("retur_id" => $id_supplier);
         if (is_array($columns)) {
 
             foreach ($columns as $column => $property) {
@@ -209,40 +198,51 @@ class Detil_pembelian extends MY_Controller {
             $ID = $this->base_model->insert_data($this->_TBL_PRIMARY, $datas);
             if ($ID > 0) {
                 $this->auditrail("Add", $ID);
+                $this->_updateStock($ID);                
             }
         }
 
         return $ID;
     }
 
-    private function _ubah($key = "") {
+    private function _updateStock($poDetailId = "", $refunded="") {
+        // get data po detail
+        $rsPoDetails = $this->base_model->list_single_data("*", "retur_details", "", array("retur_detail_id" => intval($poDetailId)));
 
-        $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
-        $this->_TBL_PRIMARY_PK = _replace_before($this->_TBL_PRIMARY_PK, ".");
+        if ($rsPoDetails != "") {
+            // get data po
+            $rsPo = $this->base_model->list_single_data("*", "returs", "", array("retur_id" => intval($rsPoDetails->retur_id)));
 
-        if ("" != $key && "" != $this->_CFG->get_KEYS()) {
-            $columns = $this->_CFG->get_column();
-            $whr = array($this->_TBL_PRIMARY_PK => $key);
-            $datas = array();
-            if (is_array($columns)) {
-                foreach ($columns as $column => $property) {
-                    if ($property->get_FIELD_TYPE() != $property->get_FILE_TYPE()) {
-                        $value = $this->input->post($property->get_FORM_ID());
-                        $value = $property->get_FIELD_TYPE() == $property->get_DATE_TYPE() ? _date($value, "Y-m-d") : $value;
-                        $field = _replace_before($property->get_FIELD_DB(), ".");
-                        if ("" != $property->get_FIELD_DB())
-                            $datas = $datas + array($field => $value);
-                    }
+            //check if stock exist by product_id
+            $rsStock = $this->base_model->list_single_data("*", "stocks", "", array("products_id" => intval($rsPoDetails->product_id)));
+            if ($rsStock == "") {
+                $stocksId = $this->base_model->insert_data("stocks", array("products_id" => intval($rsPoDetails->product_id)));
+                if ($stocksId > 0) {
+                    $this->auditrail("Add Stock", $stocksId);
                 }
+            } else {
+                $stocksId = $rsStock->id;
+            }
 
-                $ID = $this->base_model->update_data($this->_TBL_PRIMARY, $datas, $whr);
-                if ($ID > 0) {
-                    $this->auditrail("Update", $ID);
-                }
+            //insert stock mutasi
+            $data = array(
+                "stocks_id"=>intval($stocksId),
+                "description" => $rsPo->retur_no
+            );
+            
+            if ( $refunded != ""){
+                $data = $data + array("added" => intval($rsPoDetails->qty));
+            } else {
+                $data = $data + array("reduced" => intval($rsPoDetails->qty));
+            }
+            
+            $stockMutasiId = $this->base_model->insert_data("stocks_mutasi", $data);
+            if ($stockMutasiId > 0) {
+                $this->auditrail("Add Stock Mutasi", $stockMutasiId);
             }
         }
     }
-
+    
     function remove($key = "") {
         $id_supplier = $this->session->userdata(md5(__FILE__ . "id_po"));
         $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
@@ -250,6 +250,9 @@ class Detil_pembelian extends MY_Controller {
 
         if ("" != $key) {
             $whr = array($this->_TBL_PRIMARY_PK => $key);
+            
+            //refund stock first 
+            $this->_updateStock($key, "refunded");
             $affected = $this->base_model->delete_data($this->_TBL_PRIMARY, $whr);
             if ($affected > 0) {
                 $this->auditrail("remove", $key);

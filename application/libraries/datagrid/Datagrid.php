@@ -1018,15 +1018,15 @@ class Datagrid {
             $width = $column->get_CLASS() == "elm-date-range" ? "200" : "120";
             $srcCariElmTemp = '<div class="input-group input-group-sm" style="width: ' . $width . 'px;">';
             $srcCariElmTemp .= '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>';
-            $srcCariElmTemp .= '<input type="text" class="form-control ' . $class . ' srcCari" name="srcCari[]" placeholder="Tanggal" maxlength="16" value="' . $nilai . '" />';
+            $srcCariElmTemp .= '<input type="text" class="form-control ' . $class . ' srcCari" name="srcCari[]" placeholder="Tanggal" maxlength="32" value="' . $nilai . '" />';
             $srcCariElmTemp .= '</div>';
         } else {
-            $srcCariElmTemp = '   <input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="16" value="' . $nilai . '" >';
+            $srcCariElmTemp = '   <input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="32" value="' . $nilai . '" >';
         }
 
         $out .= '<div class="form-group srcCariWrapper">';
         if ($srcCariElmTemp == "") {
-            $out .= '   <input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="16" value="" >';
+            $out .= '   <input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="32" value="" >';
         } else {
             $out .= $srcCariElmTemp;
         }

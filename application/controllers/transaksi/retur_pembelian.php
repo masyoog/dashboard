@@ -11,11 +11,11 @@
  *
  * @author Yoga Mahendra
  */
-class Pembelian extends MY_Controller {
+class Retur_pembelian extends MY_Controller {
 
     private $_CFG;
-    private $_TBL_PRIMARY = "purchase_orders a";
-    private $_TBL_PRIMARY_PK = "a.purchase_order_id";
+    private $_TBL_PRIMARY = "returs a";
+    private $_TBL_PRIMARY_PK = "a.retur_id";
     private $_ORDER = array();
     private $_ITEM_PER_PAGE = "";
     private $_TBL_JOIN = array(
@@ -35,28 +35,20 @@ class Pembelian extends MY_Controller {
         $this->_CFG->set_JOIN_TBL($this->_TBL_JOIN);
         $this->_CFG->set_ORDER_TBL($this->_ORDER);
         $this->_CFG->set_ITEM_PER_PAGE($this->_ITEM_PER_PAGE);
-        
+
+        $userName = new Datagridcolumn();
+        $userName->set_FIELD_DB("a.retur_no");
+        $userName->set_SIZE(32);
+        $userName->set_FORM_ID("retur_no");
+        $userName->set_EDITABLE(FALSE);
+        $userName->set_REQUIRED(TRUE);
+        $this->_CFG->add_column("Retur No", $userName);
+
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("date(a.create_at)");
         $nama->set_FIELD_DB_ALIAS("created_at");
         $nama->set_FORM_ID("create_at");
         $this->_CFG->add_column("Created Date", $nama);
-        
-        $userName = new Datagridcolumn();
-        $userName->set_FIELD_DB("a.no_po");
-        $userName->set_SIZE(32);
-        $userName->set_FORM_ID("no_po");
-        $userName->set_EDITABLE(FALSE);
-        $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("PO No", $userName);
-        
-        $userName = new Datagridcolumn();
-        $userName->set_FIELD_DB("a.description");
-        $userName->set_SIZE(255);
-        
-        $userName->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $userName);
-
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("b.supplier_name");
@@ -65,48 +57,22 @@ class Pembelian extends MY_Controller {
         $grupUser->set_FORM_ID("supplier_name");
         $grupUser->set_REQUIRED(TRUE);
         $this->_CFG->add_column("Supplier Name", $grupUser);
-        
-        $status = new Datagridcolumn();
-        $status->set_FIELD_DB("a.payment_status");
-        $status->set_FIELD_TYPE($status->get_ENUM_TYPE());
-        $status->set_FORM_ID("payment_status");
-        $status->set_ENUM_DEFAULT_VALUE(
-                array(
-                    "0" => "Uncomplete",
-                    "1" => "Done",
-        ));
-        $status->set_STYLE(
-                array("0" => '<span class="label label-primary">Uncomplete</span>',
-                    "1" => '<span class="label label-success">Done</span>'
-        ));
-        $status->set_SIZE(1);
-        $this->_CFG->add_column("Payment Status", $status);
-        
-        $grupUser = new Datagridcolumn();
-        $grupUser->set_FIELD_DB("a.payment_duedate");
-        $grupUser->set_FIELD_DB_ALIAS("payment_duedate");
-        $grupUser->set_FIELD_TYPE($grupUser->get_DATE_TYPE());
-        $grupUser->set_FORM_ID("payment_duedate");
-        $grupUser->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Payment Duedate", $grupUser);
 
-        $status = new Datagridcolumn();
-        $status->set_FIELD_DB("a.status");
-        $status->set_FIELD_TYPE($status->get_ENUM_TYPE());
-        $status->set_FORM_ID("status");
-        $status->set_ENUM_DEFAULT_VALUE(
-                array(
-                    "0" => "New",
-//                    "1" => "Sent to Supplier",
-                    "2" => "Close PO",
-        ));
-        $status->set_STYLE(
-                array("2" => '<span class="label label-success">Closed</span>',
-//                    "1" => '<span class="label label-warning">Sent to Supplier</span>',
-                    "0" => '<span class="label label-primary">New</span>'
-        ));
-        $status->set_SIZE(1);
-        $this->_CFG->add_column("Status", $status);
+//        $status = new Datagridcolumn();
+//        $status->set_FIELD_DB("a.status");
+//        $status->set_FIELD_TYPE($status->get_ENUM_TYPE());
+//        $status->set_FORM_ID("status");
+//        $status->set_ENUM_DEFAULT_VALUE(
+//                array(
+//                    "0" => "New",
+//                    "2" => "Close Retur",
+//        ));
+//        $status->set_STYLE(
+//                array("2" => '<span class="label label-success">Closed</span>',
+//                    "0" => '<span class="label label-primary">New</span>'
+//        ));
+//        $status->set_SIZE(1);
+//        $this->_CFG->add_column("Status", $status);
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.nama");
@@ -123,19 +89,20 @@ class Pembelian extends MY_Controller {
 //                )
 //        );
 
-        $this->_CFG->add_grid_button(
-                "Update Status PO", array(
-            "method" => base_url("transaksi/update_pembelian/form/edit"),
-            "overideUri" => TRUE,
-            "style" => "fa-check",
-            "action" => "openBox('URL', '90')",
-            "authType" => "ubah"
-                )
-        );
+//        $this->_CFG->add_grid_button(
+//                "Update Status Retur", array(
+//            "method" => base_url("transaksi/update_retur/form/edit"),
+//            "overideUri" => TRUE,
+//            "style" => "fa-check",
+//            "action" => "openBox('URL', '90')",
+//            "authType" => "ubah"
+//                )
+//        );
 
+        
         $this->_CFG->add_grid_button(
-                "Input Detil PO", array(
-            "method" => base_url("transaksi/detil_pembelian/index"),
+                "Input Detil Retur", array(
+            "method" => base_url("transaksi/detil_retur/index"),
             "overideUri" => TRUE,
             "style" => "fa-server",
             "action" => "openBox('URL', '80')",
@@ -178,7 +145,7 @@ class Pembelian extends MY_Controller {
 
         if ($key == "") {
             $userName = new Datagridcolumn();
-            $this->_CFG->add_column("PO No", $userName);
+            $this->_CFG->add_column("Retur No", $userName);
         }
 
         $nama = new Datagridcolumn();
@@ -236,10 +203,10 @@ class Pembelian extends MY_Controller {
 
         $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
 
-        $poNumber = $this->docnumber->generate("FORMAT", "PO", "purchase_orders.no_po");
+        $returNumber = $this->docnumber->generate("FORMAT", "RETUR", "returs.retur_no");
 
         $datas = array(
-            "no_po" => $poNumber,
+            "retur_no" => $returNumber,
             "create_at" => date("Y-m-d H:i:s"),
             "create_by" => $this->session->userdata(USER_AUTH . "cUserID")
         );

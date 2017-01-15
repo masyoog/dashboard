@@ -38,17 +38,23 @@ class Base_model extends CI_Model {
         return $row;
     }
 
-    function execute($SQL, $returnResult = FALSE) {
+    function export($SQL) {
+        $rs = $this->db->query($SQL);
+        return $rs;
+    }
+    
+    function execute($SQL, $returnResult = TRUE) {
         $out = "";
         
         $rs = $this->db->query($SQL);
         if ( $returnResult ){
-            return $rs;
-        }
+            if ( $rs->num_rows() > 0){
+                return $rs->result();
+            }
+        } else {
+            $out = $this->db->affected_rows();
+        }        
         
-        if ($rs->num_rows() > 0) {
-            $out = $rs->result();
-        }
         return $out;
     }
 

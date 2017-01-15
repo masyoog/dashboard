@@ -42,7 +42,7 @@ class Datagridcolumn {
     private $_CLASS;
     private $_VALIDATION;
     private $_WITH_NULL_OPTION = TRUE;
-    private $_TRUNCATABLE = TRUE;
+    private $_TRUNCATABLE = FALSE;
     private $_ESCAPESPECIALCHAR = FALSE;
 
     public function set_TRUNCATABLE($_TRUNCATABLE){

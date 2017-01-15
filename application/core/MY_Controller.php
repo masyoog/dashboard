@@ -56,8 +56,8 @@ class MY_Controller extends CI_Controller {
             
             $model = _get_raw_object($this, $model);
             $qry = _replace_after($this->session->userdata(md5("lastQuery" . $this->router->directory . $this->router->class)), "LIMIT");
-            $query = $model->execute($qry, TRUE);
-
+            $query = $model->export($qry);
+            
             $delimiter = ",";
             $newline = "\r\n";
             $queryResult = $this->dbutil->csv_from_result($query, $delimiter, $newline);

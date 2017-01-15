@@ -19,34 +19,53 @@ class Update_pembelian extends MY_Controller {
         parent::__construct();
         $this->_INDEX_PAGE = $this->uri->segment(1) . "/" . $this->uri->segment(2);
     }
-    
+
     function form($mode, $key = "") {
         $data = array();
+        $addScript = "";
         $errorMsg = "";
         if ($this->input->post('save') != "") {
-            _debug_var($this->input->post());
-            die();
-        }         
+
+            $qtys = $this->input->post("qty");
+            $close_po = $this->input->post("close_po");
+
+            
+            //update item PO
+            if ( $qtys) {
+                foreach ($qtys as $poDetId => $qty) {
+                    $qry = "UPDATE purchase_order_details SET qty_approved=" . intval($qty) . ", qty_returned=GREATEST((qty-" . intval($qty) . "), 0), total_price_approved=(item_price*" . intval($qty) . ") WHERE purchase_order_detail_id=" . intval($poDetId);
+                    $isUpdated = $this->base_model->execute($qry, FALSE);
+
+                    //if affected rows > 0 then update stock
+                    if ($isUpdated > 0) {
+                        $this->auditrail("Update PO Detail", $isUpdated);
+                        $this->_updateStock($poDetId);
+                    }
+                }
+            }
+
+            //update Status PO
+            $updatePo = $this->base_model->update_data("purchase_orders", array("status" => $close_po), array("purchase_order_id" => $key));
+            if ($updatePo > 0) {
+                $this->auditrail("Update PO", $updatePo);
+            }
+            $addScript = "closeBox(true);";
+        }
+
         $rsPO = $this->base_model->list_single_data(
-                "a.*, b.supplier_name ", 
-                "purchase_orders a",
-                array("supplier b"=>"b.id=a.supplier_id"),
-                array("a.id"=>intval($key))
+                "a.*, b.supplier_name ", "purchase_orders a", array("supplier b" => "b.id=a.supplier_id"), array("a.purchase_order_id" => intval($key))
         );
-        
+
         $rsPODetail = $this->base_model->list_data(
-                "a.*, b.name as product_name", 
-                "purchase_order_details a",
-                array("product b"=>"b.id=a.product_id"),
-                array("a.purchase_orders_id"=>intval($key))
+                "a.*, b.name as product_name", "purchase_order_details a", array("product b" => "b.id=a.product_id"), array("a.purchase_order_id" => intval($key))
         );
-        
+
         $data["rs_po"] = $rsPO;
         $data["rs_po_detail"] = $rsPODetail;
-        
+
         $data["isWindowPopUp"] = TRUE;
-        
-        $data["additional_script"] = 'function hitungPo(){'
+
+        $addScript .= 'function hitungPo(){'
                 . 'var payprice = 0;'
                 . '$(".txt-qty").each(function(){'
                 . 'var qty = $(this).unmask();'
@@ -54,45 +73,45 @@ class Update_pembelian extends MY_Controller {
                 . 'var price = $(this).data("price");'
                 . 'var total = qty * price;'
                 . 'payprice += total;'
-                . 'elmTotal.val(total);'                    
+                . 'elmTotal.val(total);'
                 . '});'
                 . '$("#total_payment").val(payprice);'
                 . '}'
                 . '$(".txt-qty").change(function(){'
                 . 'hitungPo();'
-                . '});';
+                . '});'
+                . 'hitungPo();';
+
+        $data["additional_script"] = $addScript;
         //pasing to template lib
-        $this->template->load($data,"transaksi/update_pembelian");
+        $this->template->load($data, "transaksi/update_pembelian");
     }
-    
-    private function _ubah($key = "") {
 
-        $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
-        $this->_TBL_PRIMARY_PK = _replace_before($this->_TBL_PRIMARY_PK, ".");
+    private function _updateStock($poDetailId = "") {
+        // get data po detail
+        $rsPoDetails = $this->base_model->list_single_data("*", "purchase_order_details", "", array("purchase_order_detail_id" => intval($poDetailId)));
 
-        if ("" != $key && "" != $this->_CFG->get_KEYS()) {
-            $columns = $this->_CFG->get_column();
-            $whr = array($this->_TBL_PRIMARY_PK => $key);
-            $datas = array();
-            if (is_array($columns)) {
-                foreach ($columns as $column => $property) {
-                    if ($property->get_FIELD_TYPE() != $property->get_FILE_TYPE()) {
-                        $value = $this->input->post($property->get_FORM_ID());
-                        $value = $property->get_FIELD_TYPE() == $property->get_DATE_TYPE() ? _date($value, "Y-m-d") : $value;
-                        $field = _replace_before($property->get_FIELD_DB(), ".");
-                        if ("" != $property->get_FIELD_DB())
-                            $datas = $datas + array($field => $value);
-                    }
+        if ($rsPoDetails != "") {
+            // get data po
+            $rsPo = $this->base_model->list_single_data("*", "purchase_orders", "", array("purchase_order_id" => intval($rsPoDetails->purchase_order_id)));
+
+            //check if stock exist by product_id
+            $rsStock = $this->base_model->list_single_data("*", "stocks", "", array("products_id" => intval($rsPoDetails->product_id)));
+            if ($rsStock == "") {
+                $stocksId = $this->base_model->insert_data("stocks", array("products_id" => intval($rsPoDetails->product_id)));
+                if ($stocksId > 0) {
+                    $this->auditrail("Add Stock", $stocksId);
                 }
+            } else {
+                $stocksId = $rsStock->id;
+            }
 
-                $ID = $this->base_model->update_data($this->_TBL_PRIMARY, $datas, $whr);
-                if ($ID > 0) {
-                    $this->auditrail("Update", $ID);
-                }
+            //insert stock mutasi
+            $stockMutasiId = $this->base_model->insert_data("stocks_mutasi", array("stocks_id" => intval($stocksId), "added" => intval($rsPoDetails->qty_approved), "description" => $rsPo->no_po));
+            if ($stockMutasiId > 0) {
+                $this->auditrail("Add Stock Mutasi", $stockMutasiId);
             }
         }
     }
-
-    
 
 }

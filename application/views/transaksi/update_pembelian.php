@@ -50,7 +50,9 @@ $form_input_attr = array('class' => 'form-control',);
                     <div class="form-group form-group-sm">
                         <br>
                         <h4>Detail PO</h4>
-
+                        <p>
+                        - Ketika data anda simpan dengan status <b>Close PO</b> tercentang, maka sistem akan otomatis menambah stock berdasarkan Produk dengan nilai dari <b>Qty Approved.</b><br>                            
+                        </p>
                         <?php
                         if ($rs_po_detail!= "") {
                             $i = 0;
@@ -77,10 +79,10 @@ $form_input_attr = array('class' => 'form-control',);
                                         <td><?php echo _number($row->item_price) ?></td>
                                         <td><?php echo _number($row->qty) ?></td>
                                         <td><?php echo _number($row->total_price) ?></td>
-                                        <td><?php echo my_input_elm("qty[" . $row->id . "]", _number($row->qty_approved), array("required" => "required", "class" => "txt-qty elm-num", "data-price" => intval($row->item_price), "style" => "text-align:right;")); ?></td>
-                                        <!--<td><?php echo my_input_elm("retur[" . $row->id . "]", _number($row->qty_returned), array("required" => "required", "class" => "txt-qty elm-num", "style" => "text-align:right;")); ?></td>-->
-                                        <!--<td><?php echo my_input_elm("reject[" . $row->id . "]", _number($row->qty_rejected), array("required" => "required", "class" => "txt-qty elm-num", "style" => "text-align:right;")); ?></td>-->
-                                        <td><?php echo my_input_elm("total_price[" . $row->id . "]", _number($row->total_price_approved), array("required" => "required", "readonly" => "readonly", "class" => "txt-price", "style" => "text-align:right;")); ?></td>                                        
+                                        <td><?php echo my_input_elm("qty[" . $row->purchase_order_detail_id . "]", _number($row->qty_approved), array("required" => "required", "class" => "txt-qty elm-num", "data-price" => intval($row->item_price), "style" => "text-align:right;")); ?></td>
+                                        <!--<td><?php echo my_input_elm("retur[" . $row->purchase_order_detail_id . "]", _number($row->qty_returned), array("required" => "required", "class" => "txt-qty elm-num", "style" => "text-align:right;")); ?></td>-->
+                                        <!--<td><?php echo my_input_elm("reject[" . $row->purchase_order_detail_id . "]", _number($row->qty_rejected), array("required" => "required", "class" => "txt-qty elm-num", "style" => "text-align:right;")); ?></td>-->
+                                        <td><?php echo my_input_elm("total_price[" . $row->purchase_order_detail_id . "]", _number($row->total_price_approved), array("required" => "required", "readonly" => "readonly", "class" => "txt-price", "style" => "text-align:right;")); ?></td>                                        
                                     </tr>
     <?php } ?>
                                 <tr>
@@ -99,11 +101,13 @@ $form_input_attr = array('class' => 'form-control',);
                         </div>                          
                     </div>
                 </div>
-
+                
                 <div class="box-footer">
                     <div style="text-align: right;">
-                        <button  type="button" class="btn btn-danger cancelFormBtn" name="cancel" value="BATAL" onclick="window.location.href = 'http://localhost/mrs/transaksi/pembelian/index'">BATAL</button>
+                    <?php //if($rs_po->status != "2"):?>
+                        <button  type="button" class="btn btn-danger cancelFormBtn" name="cancel" value="BATAL" onclick="closeBox()">BATAL</button>
                         <button  type="submit" class="btn btn-primary submitFormBtn" name="save" value="SIMPAN" >SIMPAN</button>
+                    <?php //endif;?>
                     </div>
                 </div>
 

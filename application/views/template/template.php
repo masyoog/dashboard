@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title><?php echo $this->config->item("MY_MODULE_NAME")?></title>
+        <title><?php echo $this->config->item("MY_MODULE_NAME") ?></title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 <!--        <link rel="icon" type="image/png" href="<?php echo base_url() ?>/favicon.ico">-->
         <link rel="shortcut icon" href="<?php echo base_url() ?>/favicon.ico" type="image/x-icon">
@@ -42,7 +42,7 @@
             .content{ padding: 10px 15px; padding-bottom: 0;}
             .btn-grid { min-width: 15px; font-size: 14px; margin-left: 5px;}
 
-            #tbl-grid th.grid-btn-action, #tbl-grid td.grid-btn-action { min-width: 50px; text-align: right; padding-right: 20px;}
+            /*#tbl-grid th.grid-btn-action, #tbl-grid td.grid-btn-action { min-width: 100px; text-align: right; padding-right: 20px;}*/
 
             .right-side > .content-header {
                 padding: 5px 15px 0px 20px;
@@ -73,6 +73,9 @@
             .tclose {position:absolute; top:0px; right:0px; width:32px; height:32px; cursor:pointer; background:url(<?php echo base_url('assets/tinybox') ?>/close.png) no-repeat}
             .tclose:hover {opacity: 0.7}
 
+            .tooltip-inner {
+                max-width: 300px !important; 
+            }
         </style>
     </head>
     <body class="skin-blue">
@@ -191,7 +194,7 @@
                 echo 'style="width:100%; margin-left:0;"';
             }
             ?>>
-            
+
                 <?php echo isset($pages) ? $pages : ""; ?>
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
@@ -262,6 +265,14 @@
             }
 
             $(function () {
+                var actionGridLength = $("#tbl-grid td.grid-btn-action").children().length;
+                if (actionGridLength > 3) {
+                    $("#tbl-grid td.grid-btn-action, #tbl-grid th.grid-btn-action").css("min-width", "90px");
+                } else if (actionGridLength < 1) {
+                    $("#tbl-grid td.grid-btn-action, #tbl-grid th.grid-btn-action").css("min-width", "30px");
+                } else {
+
+                }
 
 
                 //FORMAT NUMBER
@@ -485,7 +496,7 @@
                         var isSubmit = $(this).hasClass('submitFormBtn');
                         bootbox.confirm(msg, function (result) {
                             if (result) {
-                                if (isSubmit){
+                                if (isSubmit) {
                                     $("#formBBLK").append('<input type="hidden" name="save" value="Simpan">');
                                     $("#formBBLK").submit();
                                 } else {
@@ -507,17 +518,9 @@
                     objCloned.find(".srcCari").val("");
                     objCloned.insertAfter(objToClone);
                 });
+
                 
-                var actionGridLength = $("#tbl-grid td.grid-btn-action").children().length;
-                if ( actionGridLength > 2){
-                    $("#tbl-grid td.grid-btn-action, #tbl-grid th.grid-btn-action").css("min-width", "80px");
-                } else if ( actionGridLength < 1){
-                    $("#tbl-grid td.grid-btn-action, #tbl-grid th.grid-btn-action").css("min-width", "30px");
-                } else {
-                    
-                }
-                
-                
+
 
 <?php
 if (isset($additional_script)) {

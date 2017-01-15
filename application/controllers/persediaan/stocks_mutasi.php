@@ -94,6 +94,7 @@ class Stocks_mutasi extends MY_Controller {
 
         $dg->set_config($this->_CFG);
         $data["pages"] = $dg->render();
+        
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
         $this->auditrail("Show");
