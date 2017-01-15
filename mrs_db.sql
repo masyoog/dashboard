@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 01, 2017 at 03:47 PM
+-- Generation Time: Jan 15, 2017 at 08:54 PM
 -- Server version: 5.7.16-0ubuntu0.16.04.1
--- PHP Version: 7.0.8-0ubuntu0.16.04.3
+-- PHP Version: 7.0.13-0ubuntu0.16.04.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -58,6 +58,42 @@ CREATE TABLE `customers` (
   `name` varchar(256) NOT NULL,
   `hp` varchar(20) NOT NULL,
   `status` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `expenses`
+--
+
+CREATE TABLE `expenses` (
+  `expense_id` int(11) UNSIGNED NOT NULL,
+  `expense_date` date NOT NULL,
+  `amount` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `description` varchar(255) DEFAULT NULL,
+  `create_by` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`expense_id`, `expense_date`, `amount`, `description`, `create_by`) VALUES
+(2, '2017-01-15', 2000, 'ngamen', 2),
+(3, '2017-01-15', 1000, 'beli minum', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `income_others`
+--
+
+CREATE TABLE `income_others` (
+  `income_other_id` int(11) UNSIGNED NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `amount` int(11) UNSIGNED DEFAULT '0',
+  `create_at` date DEFAULT NULL,
+  `create_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -374,9 +410,12 @@ INSERT INTO `provider` (`id`, `provider_name`, `brand_id`, `ptype_id`, `status`)
 --
 
 CREATE TABLE `purchase_orders` (
-  `id` int(11) NOT NULL,
+  `purchase_order_id` int(11) UNSIGNED NOT NULL,
   `no_po` varchar(32) NOT NULL,
   `supplier_id` int(11) NOT NULL,
+  `payment_duedate` date DEFAULT NULL,
+  `payment_status` tinyint(4) UNSIGNED DEFAULT '0',
+  `description` varchar(255) DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `create_at` datetime NOT NULL,
   `create_by` int(11) NOT NULL
@@ -386,9 +425,9 @@ CREATE TABLE `purchase_orders` (
 -- Dumping data for table `purchase_orders`
 --
 
-INSERT INTO `purchase_orders` (`id`, `no_po`, `supplier_id`, `status`, `create_at`, `create_by`) VALUES
-(1, 'PO/MRS/XII/2016/000001', 2, 2, '2016-12-21 09:01:43', 2),
-(2, 'PO/MRS/XII/2016/000002', 2, 0, '2016-12-25 14:50:09', 2);
+INSERT INTO `purchase_orders` (`purchase_order_id`, `no_po`, `supplier_id`, `payment_duedate`, `payment_status`, `description`, `status`, `create_at`, `create_by`) VALUES
+(1, 'PO/MRS/I/2017/000001', 2, '2017-01-15', 1, NULL, 2, '2017-01-15 12:26:59', 2),
+(2, 'PO/MRS/I/2017/000002', 1, '2017-01-28', 0, '', 2, '2017-01-15 16:18:12', 2);
 
 -- --------------------------------------------------------
 
@@ -397,15 +436,15 @@ INSERT INTO `purchase_orders` (`id`, `no_po`, `supplier_id`, `status`, `create_a
 --
 
 CREATE TABLE `purchase_order_details` (
-  `id` int(11) NOT NULL,
-  `purchase_orders_id` int(11) NOT NULL,
+  `purchase_order_detail_id` int(11) UNSIGNED NOT NULL,
+  `purchase_order_id` int(11) UNSIGNED NOT NULL,
   `product_id` int(11) NOT NULL,
   `description` varchar(128) DEFAULT NULL,
   `qty` int(11) NOT NULL DEFAULT '0',
   `item_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total_price` decimal(12,2) NOT NULL DEFAULT '0.00',
   `qty_approved` int(11) DEFAULT '0',
-  `qty_returned` int(11) DEFAULT '0',
+  `qty_returned` int(11) UNSIGNED DEFAULT '0',
   `qty_rejected` int(11) DEFAULT '0',
   `total_price_approved` int(11) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -414,12 +453,61 @@ CREATE TABLE `purchase_order_details` (
 -- Dumping data for table `purchase_order_details`
 --
 
-INSERT INTO `purchase_order_details` (`id`, `purchase_orders_id`, `product_id`, `description`, `qty`, `item_price`, `total_price`, `qty_approved`, `qty_returned`, `qty_rejected`, `total_price_approved`) VALUES
-(1, 3, 3, 'Lala', 3, '20000.00', '60000.00', 0, 0, 0, 0),
-(2, 3, 5, 'Lalalalla', 4, '30000.00', '120000.00', 0, 0, 0, 0),
-(3, 1, 2, 'Simpati 10', 5, '10500.00', '52500.00', 0, 0, 0, 0),
-(4, 1, 3, 'Indosat Data', 10, '3000.00', '30000.00', 0, 0, 0, 0),
-(5, 2, 6, 'PLN Lala', 2, '2000.00', '4000.00', 0, 0, 0, 0);
+INSERT INTO `purchase_order_details` (`purchase_order_detail_id`, `purchase_order_id`, `product_id`, `description`, `qty`, `item_price`, `total_price`, `qty_approved`, `qty_returned`, `qty_rejected`, `total_price_approved`) VALUES
+(1, 1, 2, '', 10, '10500.00', '105000.00', 10, 0, 0, 105000),
+(2, 1, 1, '', 20, '5400.00', '108000.00', 20, 0, 0, 108000),
+(3, 2, 3, 'Desc', 20, '20000.00', '400000.00', 20, 0, 0, 400000),
+(4, 2, 1, 'I5 Sup Tes', 30, '5300.00', '159000.00', 30, 0, 0, 159000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `returs`
+--
+
+CREATE TABLE `returs` (
+  `retur_id` int(11) UNSIGNED NOT NULL,
+  `retur_no` varchar(32) NOT NULL,
+  `supplier_id` int(11) UNSIGNED NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT '0',
+  `create_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `create_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `returs`
+--
+
+INSERT INTO `returs` (`retur_id`, `retur_no`, `supplier_id`, `description`, `status`, `create_at`, `create_by`) VALUES
+(1, 'RET/MRS/I/2017/000001', 1, NULL, 0, '2017-01-15 17:11:38', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `retur_details`
+--
+
+CREATE TABLE `retur_details` (
+  `retur_detail_id` int(11) UNSIGNED NOT NULL,
+  `retur_id` int(11) UNSIGNED NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `description` varchar(128) DEFAULT NULL,
+  `qty` int(11) NOT NULL DEFAULT '0',
+  `item_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `total_price` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `qty_approved` int(11) DEFAULT '0',
+  `qty_returned` int(11) UNSIGNED DEFAULT '0',
+  `qty_rejected` int(11) DEFAULT '0',
+  `total_price_approved` int(11) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `retur_details`
+--
+
+INSERT INTO `retur_details` (`retur_detail_id`, `retur_id`, `product_id`, `description`, `qty`, `item_price`, `total_price`, `qty_approved`, `qty_returned`, `qty_rejected`, `total_price_approved`) VALUES
+(5, 1, 1, 'Rusak', 10, '0.00', '0.00', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -467,7 +555,9 @@ CREATE TABLE `stocks` (
 --
 
 INSERT INTO `stocks` (`id`, `products_id`, `last_balance`, `added`, `reduced`, `balance`, `closing_date`, `closed_by`) VALUES
-(1, 1, 0, 7, 3, 4, '2016-12-22 05:44:52', 2);
+(1, 2, 0, 10, 0, 10, '2017-01-15 16:10:05', 0),
+(2, 1, 0, 55, 15, 40, '2017-01-15 16:10:05', 0),
+(3, 3, 0, 20, 0, 20, '2017-01-15 17:07:48', 0);
 
 -- --------------------------------------------------------
 
@@ -508,9 +598,13 @@ CREATE TABLE `stocks_mutasi` (
 --
 
 INSERT INTO `stocks_mutasi` (`id`, `stocks_id`, `last_balance`, `added`, `reduced`, `balance`, `description`, `create_at`) VALUES
-(1, 1, 0, 5, 0, 5, 'PEMBELIAN NO PO:', '2016-12-22 05:50:47'),
-(2, 1, 5, 2, 0, 7, 'PEMBELIAN NO PO:', '2016-12-22 05:51:10'),
-(3, 1, 7, 0, 3, 4, 'PENJUALAN', '2016-12-22 05:51:31');
+(1, 1, 0, 10, 0, 10, 'PO/MRS/I/2017/000001', '2017-01-15 16:10:05'),
+(2, 2, 0, 20, 0, 20, 'PO/MRS/I/2017/000001', '2017-01-15 16:10:06'),
+(3, 3, 0, 20, 0, 20, 'PO/MRS/I/2017/000002', '2017-01-15 17:07:48'),
+(4, 2, 20, 30, 0, 50, 'PO/MRS/I/2017/000002', '2017-01-15 17:07:48'),
+(5, 2, 50, 0, 5, 45, 'RET/MRS/I/2017/000001', '2017-01-15 17:48:54'),
+(6, 2, 45, 5, 0, 50, 'RET/MRS/I/2017/000001', '2017-01-15 17:49:07'),
+(7, 2, 50, 0, 10, 40, 'RET/MRS/I/2017/000001', '2017-01-15 17:53:35');
 
 --
 -- Triggers `stocks_mutasi`
@@ -591,7 +685,8 @@ INSERT INTO `sys_config` (`id`, `tipe`, `nama`, `nilai`, `status`) VALUES
 (4, 'UPL_USR', 'overwrite', 'TRUE', 1),
 (5, 'UPL_USR', 'max_height', '0', 1),
 (6, 'UPL_USR', 'max_width', '0', 1),
-(7, 'FORMAT', 'PO', 'PO/MRS/[MONTH]/[YEAR]/[NO]', 1);
+(7, 'FORMAT', 'PO', 'PO/MRS/[MONTH]/[YEAR]/[NO]', 1),
+(8, 'FORMAT', 'RETUR', 'RET/MRS/[MONTH]/[YEAR]/[NO]', 1);
 
 -- --------------------------------------------------------
 
@@ -640,7 +735,9 @@ INSERT INTO `sys_grup_akses` (`id`, `sys_grup_user_id`, `sys_menu_id`, `baca`, `
 (235, 2, 48, 1, 1, 1, 1, 1),
 (236, 2, 49, 1, 1, 1, 1, 1),
 (237, 2, 50, 1, 1, 1, 1, 1),
-(238, 2, 51, 1, 1, 1, 1, 1);
+(238, 2, 51, 1, 1, 1, 1, 1),
+(239, 2, 52, 1, 1, 1, 1, 1),
+(240, 2, 53, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1383,7 +1480,673 @@ INSERT INTO `sys_log` (`id`, `sys_user_id`, `log_event`, `log_object`, `log_ref_
 (2120, 2, 'Export', 'transaksi/pembelian', '', '2016-12-26', '21:21:52'),
 (2121, 2, 'Show', 'transaksi/pembelian', '', '2016-12-26', '21:29:16'),
 (2122, 2, 'Show', 'transaksi/pembelian', '', '2016-12-26', '21:33:06'),
-(2123, 2, 'Show', 'laporan/stocks', '', '2016-12-26', '21:33:22');
+(2123, 2, 'Show', 'laporan/stocks', '', '2016-12-26', '21:33:22'),
+(2124, 2, 'Show', 'transaksi/pembelian', '', '2017-01-08', '13:01:51'),
+(2125, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-08', '13:01:55'),
+(2126, 2, 'Show', 'transaksi/pembelian', '', '2017-01-08', '13:02:05'),
+(2127, 2, 'Show', 'laporan/stocks', '', '2017-01-08', '13:02:08'),
+(2128, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-08', '13:02:40'),
+(2129, 2, 'Show', 'laporan/stocks', '', '2017-01-08', '13:02:42'),
+(2130, 2, 'Show', 'transaksi/pembelian', '', '2017-01-08', '13:23:17'),
+(2131, 2, 'Show', 'setting/prefix', '', '2017-01-09', '11:38:13'),
+(2132, 2, 'Show', 'transaksi/pembelian', '', '2017-01-09', '11:38:18'),
+(2133, 2, 'Show', 'transaksi/pembelian', '', '2017-01-09', '11:38:20'),
+(2134, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:06:51'),
+(2135, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:08:21'),
+(2136, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:17:38'),
+(2137, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:17:39'),
+(2138, 2, 'Show', 'setting/tipe_produk', '', '2017-01-12', '23:17:41'),
+(2139, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:17:43'),
+(2140, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:18:20'),
+(2141, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:18:23'),
+(2142, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:18:26'),
+(2143, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:18:39'),
+(2144, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:24:13'),
+(2145, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-12', '23:24:14'),
+(2146, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:24:16'),
+(2147, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:24:18'),
+(2148, 2, 'Show', 'setting/supplier', '', '2017-01-12', '23:24:19'),
+(2149, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:24:21'),
+(2150, 2, 'Show', 'setting/produk', '', '2017-01-12', '23:24:22'),
+(2151, 2, 'Show', 'setting/tipe_produk', '', '2017-01-12', '23:24:23'),
+(2152, 2, 'Show', 'setting/satuan', '', '2017-01-12', '23:24:25'),
+(2153, 2, 'Show', 'setting/provider', '', '2017-01-12', '23:24:26'),
+(2154, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:24:30'),
+(2155, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-12', '23:24:31'),
+(2156, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:24:35'),
+(2157, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:27:34'),
+(2158, 2, 'Show', 'setting/tipe_produk', '', '2017-01-12', '23:27:38'),
+(2159, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:27:41'),
+(2160, 2, 'Show', 'setting/produk', '', '2017-01-12', '23:28:01'),
+(2161, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:28:17'),
+(2162, 2, 'Show', 'setting/menu', '', '2017-01-12', '23:28:19'),
+(2163, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:28:21'),
+(2164, 2, 'Show', 'setting/konfigurasi', '', '2017-01-12', '23:28:24'),
+(2165, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:28:28'),
+(2166, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:30:35'),
+(2167, 2, 'Show', 'setting/supplier', '', '2017-01-12', '23:30:38'),
+(2168, 2, 'Show', 'setting/provider', '', '2017-01-12', '23:30:39'),
+(2169, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:30:41');
+INSERT INTO `sys_log` (`id`, `sys_user_id`, `log_event`, `log_object`, `log_ref_key`, `log_date`, `log_time`) VALUES
+(2170, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:30:42'),
+(2171, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:30:45'),
+(2172, 2, 'Show', 'setting/supplier', '', '2017-01-12', '23:30:46'),
+(2173, 2, 'Show', 'setting/tipe_produk', '', '2017-01-12', '23:30:48'),
+(2174, 2, 'Show', 'setting/menu', '', '2017-01-12', '23:30:49'),
+(2175, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:30:50'),
+(2176, 2, 'Show', 'setting/konfigurasi', '', '2017-01-12', '23:30:51'),
+(2177, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:30:53'),
+(2178, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:30:55'),
+(2179, 2, 'Show', 'setting/konfigurasi', '', '2017-01-12', '23:30:57'),
+(2180, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:30:59'),
+(2181, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:31:01'),
+(2182, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:31:04'),
+(2183, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:31:06'),
+(2184, 2, 'Show', 'setting/menu', '', '2017-01-12', '23:31:07'),
+(2185, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:31:09'),
+(2186, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:36:23'),
+(2187, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:36:25'),
+(2188, 2, 'Show', 'setting/supplier', '', '2017-01-12', '23:36:29'),
+(2189, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:39:40'),
+(2190, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:39:42'),
+(2191, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:39:45'),
+(2192, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:46:37'),
+(2193, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:46:41'),
+(2194, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-12', '23:57:17'),
+(2195, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-12', '23:57:18'),
+(2196, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:57:20'),
+(2197, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:57:23'),
+(2198, 2, 'Show', 'setting/produk', '', '2017-01-12', '23:57:25'),
+(2199, 2, 'Show', 'setting/menu', '', '2017-01-12', '23:57:27'),
+(2200, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:57:29'),
+(2201, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:57:33'),
+(2202, 2, 'Show', 'setting/brand', '', '2017-01-12', '23:57:35'),
+(2203, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:57:37'),
+(2204, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:57:39'),
+(2205, 2, 'Show', 'setting/konfigurasi', '', '2017-01-12', '23:57:40'),
+(2206, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:57:44'),
+(2207, 2, 'Show', 'transaksi/pembelian', '', '2017-01-12', '23:57:48'),
+(2208, 2, 'Show', 'laporan/stocks', '', '2017-01-12', '23:57:51'),
+(2209, 2, 'Show', 'log/auditrail', '', '2017-01-12', '23:57:52'),
+(2210, 2, 'Show', 'setting/prefix', '', '2017-01-12', '23:57:55'),
+(2211, 2, 'Show', 'setting/supplier', '', '2017-01-12', '23:57:56'),
+(2212, 2, 'Show', 'setting/customer', '', '2017-01-12', '23:57:57'),
+(2213, 2, 'Show', 'setting/produk', '', '2017-01-12', '23:57:58'),
+(2214, 2, 'Show', 'setting/brand', '', '2017-01-12', '23:57:59'),
+(2215, 2, 'Show', 'setting/tipe_produk', '', '2017-01-12', '23:57:59'),
+(2216, 2, 'Show', 'setting/satuan', '', '2017-01-12', '23:58:00'),
+(2217, 2, 'Show', 'setting/provider', '', '2017-01-12', '23:58:00'),
+(2218, 2, 'Show', 'setting/menu', '', '2017-01-12', '23:58:01'),
+(2219, 2, 'Show', 'setting/grup_user', '', '2017-01-12', '23:58:02'),
+(2220, 2, 'Show', 'setting/user', '', '2017-01-12', '23:58:02'),
+(2221, 2, 'Show', 'setting/konfigurasi', '', '2017-01-12', '23:58:03'),
+(2222, 2, 'Show', 'setting/user', '', '2017-01-13', '00:05:45'),
+(2223, 2, 'Show', 'setting/user', '', '2017-01-13', '00:06:12'),
+(2224, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:15'),
+(2225, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:06:16'),
+(2226, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:06:17'),
+(2227, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:06:18'),
+(2228, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:18'),
+(2229, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:06:19'),
+(2230, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:06:19'),
+(2231, 2, 'Show', 'setting/brand', '', '2017-01-13', '00:06:19'),
+(2232, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:06:20'),
+(2233, 2, 'Show', 'setting/satuan', '', '2017-01-13', '00:06:20'),
+(2234, 2, 'Show', 'setting/provider', '', '2017-01-13', '00:06:20'),
+(2235, 2, 'Show', 'setting/menu', '', '2017-01-13', '00:06:21'),
+(2236, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:06:21'),
+(2237, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:06:22'),
+(2238, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:06:22'),
+(2239, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:06:23'),
+(2240, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:06:24'),
+(2241, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:06:24'),
+(2242, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:24'),
+(2243, 2, 'Show', 'setting/brand', '', '2017-01-13', '00:06:25'),
+(2244, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:06:25'),
+(2245, 2, 'Show', 'setting/satuan', '', '2017-01-13', '00:06:25'),
+(2246, 2, 'Show', 'setting/provider', '', '2017-01-13', '00:06:26'),
+(2247, 2, 'Show', 'setting/menu', '', '2017-01-13', '00:06:26'),
+(2248, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:06:26'),
+(2249, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '00:06:27'),
+(2250, 2, 'Show', 'setting/user', '', '2017-01-13', '00:06:27'),
+(2251, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:06:28'),
+(2252, 2, 'Show', 'setting/satuan', '', '2017-01-13', '00:06:28'),
+(2253, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:06:29'),
+(2254, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:06:29'),
+(2255, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:30'),
+(2256, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:30'),
+(2257, 2, 'Show', 'laporan/stocks', '', '2017-01-13', '00:06:32'),
+(2258, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-13', '00:06:32'),
+(2259, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:06:33'),
+(2260, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:06:36'),
+(2261, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:06:36'),
+(2262, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:06:37'),
+(2263, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:06:37'),
+(2264, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:08:19'),
+(2265, 2, 'Show', 'setting/provider', '', '2017-01-13', '00:10:01'),
+(2266, 2, 'Show', 'setting/brand', '', '2017-01-13', '00:10:03'),
+(2267, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:10:04'),
+(2268, 2, 'Show', 'laporan/stocks', '', '2017-01-13', '00:10:06'),
+(2269, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:13:10'),
+(2270, 2, 'Add', 'transaksi/pembelian', '3', '2017-01-13', '00:13:17'),
+(2271, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:13:17'),
+(2272, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-13', '00:13:28'),
+(2273, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-13', '00:13:32'),
+(2274, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-13', '00:13:37'),
+(2275, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:13:55'),
+(2276, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-13', '00:13:59'),
+(2277, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:32:15'),
+(2278, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '00:32:17'),
+(2279, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:32:44'),
+(2280, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:32:58'),
+(2281, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:35:20'),
+(2282, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:36:21'),
+(2283, 2, 'Show', 'setting/user', '', '2017-01-13', '00:36:22'),
+(2284, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:36:48'),
+(2285, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:36:51'),
+(2286, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '00:36:53'),
+(2287, 2, 'Show', 'setting/menu', '', '2017-01-13', '00:36:54'),
+(2288, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:37:43'),
+(2289, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:45:29'),
+(2290, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:45:34'),
+(2291, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:45:35'),
+(2292, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:45:37'),
+(2293, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:45:58'),
+(2294, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:46:06'),
+(2295, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:46:18'),
+(2296, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:48:14'),
+(2297, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:50:44'),
+(2298, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:50:47'),
+(2299, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '00:50:50'),
+(2300, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '00:50:53'),
+(2301, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '00:50:57'),
+(2302, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:51:00'),
+(2303, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:51:03'),
+(2304, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:52:12'),
+(2305, 2, 'Show', 'setting/supplier', '', '2017-01-13', '00:52:17'),
+(2306, 2, 'Show', 'setting/customer', '', '2017-01-13', '00:52:18'),
+(2307, 2, 'Show', 'setting/produk', '', '2017-01-13', '00:52:19'),
+(2308, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '00:52:21'),
+(2309, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:52:24'),
+(2310, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:52:26'),
+(2311, 2, 'Show', 'setting/prefix', '', '2017-01-13', '00:52:40'),
+(2312, 2, 'Show', 'setting/menu', '', '2017-01-13', '00:52:46'),
+(2313, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '00:52:49'),
+(2314, 2, 'Show', 'log/auditrail', '', '2017-01-13', '00:53:00'),
+(2315, 2, 'Show', 'laporan/stocks', '', '2017-01-13', '01:36:13'),
+(2316, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-13', '01:36:15'),
+(2317, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '01:36:17'),
+(2318, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '01:36:22'),
+(2319, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '01:36:23'),
+(2320, 2, 'Show', 'setting/customer', '', '2017-01-13', '02:24:15'),
+(2321, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '02:24:17'),
+(2322, 2, 'Show', 'setting/menu', '', '2017-01-13', '02:24:19'),
+(2323, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '02:24:21'),
+(2324, 2, 'Show', 'log/auditrail', '', '2017-01-13', '02:24:23'),
+(2325, 2, 'Show', 'setting/supplier', '', '2017-01-13', '02:24:32'),
+(2326, 2, 'Show', 'setting/supplier', '', '2017-01-13', '02:24:36'),
+(2327, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '02:24:38'),
+(2328, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '02:24:40'),
+(2329, 2, 'Show', 'setting/brand', '', '2017-01-13', '02:27:06'),
+(2330, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '02:27:09'),
+(2331, 2, 'Show', 'setting/grup_user', '', '2017-01-13', '02:27:10'),
+(2332, 2, 'Show', 'setting/provider', '', '2017-01-13', '02:27:12'),
+(2333, 2, 'Show', 'setting/satuan', '', '2017-01-13', '02:27:14'),
+(2334, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '02:27:16'),
+(2335, 2, 'Show', 'log/auditrail', '', '2017-01-13', '02:27:19'),
+(2336, 2, 'Show', 'laporan/stocks', '', '2017-01-13', '02:27:21'),
+(2337, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '02:27:28'),
+(2338, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '02:27:37'),
+(2339, 2, 'Show', 'transaksi/pembelian', '', '2017-01-13', '02:30:16'),
+(2340, 2, 'Show', 'setting/prefix', '', '2017-01-13', '02:30:21'),
+(2341, 2, 'Show', 'setting/supplier', '', '2017-01-13', '02:30:34'),
+(2342, 2, 'Show', 'setting/tipe_produk', '', '2017-01-13', '02:30:59'),
+(2343, 2, 'Show', 'setting/provider', '', '2017-01-13', '02:31:01'),
+(2344, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '02:31:04'),
+(2345, 2, 'Show', 'setting/supplier', '', '2017-01-13', '02:32:37'),
+(2346, 2, 'Show', 'setting/konfigurasi', '', '2017-01-13', '02:34:55'),
+(2347, 2, 'Show', 'setting/produk', '', '2017-01-13', '02:35:01'),
+(2348, 2, 'Show', 'setting/prefix', '', '2017-01-13', '02:35:05'),
+(2349, 2, 'Show', 'setting/supplier', '', '2017-01-14', '10:51:14'),
+(2350, 2, 'Show', 'setting/customer', '', '2017-01-14', '10:51:16'),
+(2351, 2, 'Show', 'setting/produk', '', '2017-01-14', '10:51:17'),
+(2352, 2, 'Show', 'setting/brand', '', '2017-01-14', '10:51:19'),
+(2353, 2, 'Show', 'setting/tipe_produk', '', '2017-01-14', '10:51:20'),
+(2354, 2, 'Show', 'setting/satuan', '', '2017-01-14', '10:51:21'),
+(2355, 2, 'Show', 'setting/konfigurasi', '', '2017-01-14', '10:52:47'),
+(2356, 2, 'Show', 'setting/user', '', '2017-01-14', '10:52:49'),
+(2357, 2, 'Show', 'setting/grup_user', '', '2017-01-14', '10:52:50'),
+(2358, 2, 'Show', 'setting/provider', '', '2017-01-14', '10:52:52'),
+(2359, 2, 'Show', 'setting/brand', '', '2017-01-14', '10:52:55'),
+(2360, 2, 'Show', 'setting/prefix', '', '2017-01-14', '10:52:56'),
+(2361, 2, 'Show', 'setting/supplier', '', '2017-01-14', '10:52:58'),
+(2362, 2, 'Show', 'setting/customer', '', '2017-01-14', '10:52:59'),
+(2363, 2, 'Show', 'setting/produk', '', '2017-01-14', '10:53:00'),
+(2364, 2, 'Show', 'setting/prefix', '', '2017-01-14', '16:41:48'),
+(2365, 2, 'Show', 'setting/supplier', '', '2017-01-14', '16:41:50'),
+(2366, 2, 'Show', 'setting/customer', '', '2017-01-14', '16:41:51'),
+(2367, 2, 'Show', 'setting/produk', '', '2017-01-14', '16:41:52'),
+(2368, 2, 'Show', 'setting/brand', '', '2017-01-14', '16:41:54'),
+(2369, 2, 'Show', 'setting/tipe_produk', '', '2017-01-14', '16:41:55'),
+(2370, 2, 'Show', 'setting/satuan', '', '2017-01-14', '16:41:56'),
+(2371, 2, 'Show', 'setting/menu', '', '2017-01-14', '16:41:57'),
+(2372, 2, 'Show', 'setting/grup_user', '', '2017-01-14', '16:41:58'),
+(2373, 2, 'Show', 'setting/konfigurasi', '', '2017-01-14', '16:41:59'),
+(2374, 2, 'Show', 'laporan/stocks', '', '2017-01-14', '17:42:12'),
+(2375, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-14', '17:42:14'),
+(2376, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '12:23:04'),
+(2377, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:23:08'),
+(2378, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:23:21'),
+(2379, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:23:25'),
+(2380, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:23:49'),
+(2381, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '12:26:53'),
+(2382, 2, 'Add', 'transaksi/pembelian', '1', '2017-01-15', '12:26:59'),
+(2383, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '12:26:59'),
+(2384, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:27:09'),
+(2385, 2, 'Add', 'transaksi/detil_pembelian', '1', '2017-01-15', '12:28:11'),
+(2386, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:28:11'),
+(2387, 2, 'Add', 'transaksi/detil_pembelian', '2', '2017-01-15', '12:28:33'),
+(2388, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:28:33'),
+(2389, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '12:33:33'),
+(2390, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '12:33:45'),
+(2391, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '12:34:11'),
+(2392, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:07:03'),
+(2393, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:09:13'),
+(2394, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:09:22'),
+(2395, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:10:43'),
+(2396, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:10:44'),
+(2397, 2, 'Show', 'log/auditrail', '', '2017-01-15', '13:11:00'),
+(2398, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '13:11:11'),
+(2399, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:11:28'),
+(2400, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '13:19:33'),
+(2401, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:28:29'),
+(2402, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:33:47'),
+(2403, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:33:49'),
+(2404, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:41:15'),
+(2405, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:41:21'),
+(2406, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:41:35'),
+(2407, 2, 'Show', 'setting/prefix', '', '2017-01-15', '13:41:37'),
+(2408, 2, 'Show', 'setting/supplier', '', '2017-01-15', '13:41:38'),
+(2409, 2, 'Show', 'setting/produk', '', '2017-01-15', '13:41:41'),
+(2410, 2, 'Show', 'setting/produk', '', '2017-01-15', '13:41:52'),
+(2411, 2, 'Show', 'setting/produk', '', '2017-01-15', '13:42:00'),
+(2412, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:43:39'),
+(2413, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '13:43:44'),
+(2414, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '13:43:45'),
+(2415, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:01:30'),
+(2416, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:02:29'),
+(2417, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:02:58'),
+(2418, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:03:45'),
+(2419, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '14:04:37'),
+(2420, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:06:40'),
+(2421, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:07:17'),
+(2422, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '14:08:06'),
+(2423, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:22:15'),
+(2424, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:23:01'),
+(2425, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:23:21'),
+(2426, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:23:24'),
+(2427, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:23:26'),
+(2428, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:23:29'),
+(2429, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:25:00'),
+(2430, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:25:25'),
+(2431, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:25:47'),
+(2432, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:31:48'),
+(2433, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '14:42:15'),
+(2434, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:42:51'),
+(2435, 2, 'Show', 'setting/konfigurasi', '', '2017-01-15', '14:48:04'),
+(2436, 2, 'Show', 'setting/konfigurasi', '', '2017-01-15', '14:48:10'),
+(2437, 2, 'Add', 'setting/konfigurasi', '8', '2017-01-15', '14:49:01'),
+(2438, 2, 'Show', 'setting/konfigurasi', '', '2017-01-15', '14:49:01'),
+(2439, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '14:59:35'),
+(2440, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:09:10'),
+(2441, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:40'),
+(2442, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:41'),
+(2443, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:43'),
+(2444, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:44'),
+(2445, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:49'),
+(2446, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:53'),
+(2447, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:54'),
+(2448, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:55'),
+(2449, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:56'),
+(2450, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:57'),
+(2451, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:11:58'),
+(2452, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '15:11:59'),
+(2453, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:12:31'),
+(2454, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:18:12'),
+(2455, 2, 'Show', 'log/auditrail', '', '2017-01-15', '15:35:52'),
+(2456, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:41:32'),
+(2457, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:41:34'),
+(2458, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:41:36'),
+(2459, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:42:57'),
+(2460, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:43:55'),
+(2461, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:44:48'),
+(2462, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '15:45:28'),
+(2463, 2, 'Add', 'transaksi/detil_pembelian', '1', '2017-01-15', '15:46:23'),
+(2464, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '15:46:23'),
+(2465, 2, 'Add', 'transaksi/detil_pembelian', '2', '2017-01-15', '15:46:39'),
+(2466, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '15:46:39'),
+(2467, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:46:59'),
+(2468, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:46:59'),
+(2469, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:47:35'),
+(2470, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:48:17'),
+(2471, 2, 'Add Stock', 'transaksi/update_pembelian', '1', '2017-01-15', '15:48:17'),
+(2472, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '1', '2017-01-15', '15:48:17'),
+(2473, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:48:17'),
+(2474, 2, 'Add Stock', 'transaksi/update_pembelian', '2', '2017-01-15', '15:48:18'),
+(2475, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '2', '2017-01-15', '15:48:18'),
+(2476, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:48:20'),
+(2477, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:48:38'),
+(2478, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:48:40'),
+(2479, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:48:41'),
+(2480, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '15:50:17'),
+(2481, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:50:29'),
+(2482, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '3', '2017-01-15', '15:50:29'),
+(2483, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:50:33'),
+(2484, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:50:38'),
+(2485, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:54:17'),
+(2486, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '4', '2017-01-15', '15:54:17'),
+(2487, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:54:17'),
+(2488, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '5', '2017-01-15', '15:54:18'),
+(2489, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:54:21'),
+(2490, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:54:25'),
+(2491, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:57:15'),
+(2492, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '6', '2017-01-15', '15:57:15'),
+(2493, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '15:57:16'),
+(2494, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '7', '2017-01-15', '15:57:16'),
+(2495, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '15:57:23'),
+(2496, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:57:26'),
+(2497, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:58:26'),
+(2498, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:58:35'),
+(2499, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '15:59:38'),
+(2500, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:00:02'),
+(2501, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:00:36'),
+(2502, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:00:50'),
+(2503, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:02:02'),
+(2504, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:02:31'),
+(2505, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:02:36'),
+(2506, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:03:16'),
+(2507, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:03:48'),
+(2508, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:03:49'),
+(2509, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:03:50'),
+(2510, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:03:51'),
+(2511, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:03:53'),
+(2512, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:03:55'),
+(2513, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:03:57'),
+(2514, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:03:58'),
+(2515, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:04:00'),
+(2516, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:04:00'),
+(2517, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:04:02'),
+(2518, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:04:27'),
+(2519, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:04:57'),
+(2520, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:04:58'),
+(2521, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:04:59'),
+(2522, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:05:03'),
+(2523, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:05:04'),
+(2524, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:05:41'),
+(2525, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:05:44'),
+(2526, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:07:58'),
+(2527, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:08:43'),
+(2528, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:08:50'),
+(2529, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:08:53'),
+(2530, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:08:56'),
+(2531, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:09:03'),
+(2532, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '16:10:05'),
+(2533, 2, 'Add Stock', 'transaksi/update_pembelian', '1', '2017-01-15', '16:10:05'),
+(2534, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '1', '2017-01-15', '16:10:05'),
+(2535, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '16:10:05'),
+(2536, 2, 'Add Stock', 'transaksi/update_pembelian', '2', '2017-01-15', '16:10:05'),
+(2537, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '2', '2017-01-15', '16:10:06'),
+(2538, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:10:06'),
+(2539, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:10:10'),
+(2540, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:10:14'),
+(2541, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:13:17'),
+(2542, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:14:57'),
+(2543, 2, 'Update', 'transaksi/pembelian', '1', '2017-01-15', '16:15:51'),
+(2544, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:15:51'),
+(2545, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:16:35'),
+(2546, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:17:01'),
+(2547, 2, 'Update PO', 'transaksi/update_pembelian', '1', '2017-01-15', '16:17:05'),
+(2548, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:17:05'),
+(2549, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:17:10'),
+(2550, 2, 'Update PO', 'transaksi/update_pembelian', '1', '2017-01-15', '16:17:19'),
+(2551, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:17:19'),
+(2552, 2, 'Add', 'transaksi/pembelian', '2', '2017-01-15', '16:18:12'),
+(2553, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:18:13'),
+(2554, 2, 'Update PO', 'transaksi/update_pembelian', '1', '2017-01-15', '16:18:21'),
+(2555, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:18:22'),
+(2556, 2, 'Update PO', 'transaksi/update_pembelian', '1', '2017-01-15', '16:18:28'),
+(2557, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:18:28'),
+(2558, 2, 'Update PO', 'transaksi/update_pembelian', '1', '2017-01-15', '16:18:41'),
+(2559, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:19:22'),
+(2560, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '16:19:25'),
+(2561, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:19:35'),
+(2562, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:23:24'),
+(2563, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:23:37'),
+(2564, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:23:38'),
+(2565, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:23:40'),
+(2566, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:23:43'),
+(2567, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:23:54'),
+(2568, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:24:05'),
+(2569, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:24:25'),
+(2570, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:24:26'),
+(2571, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:24:27'),
+(2572, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:24:44'),
+(2573, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:24:55'),
+(2574, 2, 'Show', 'transaksi/retur', '', '2017-01-15', '16:24:56'),
+(2575, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:26:01'),
+(2576, 2, 'Show', 'setting/menu', '', '2017-01-15', '16:26:32'),
+(2577, 2, 'Show', 'setting/menu', '', '2017-01-15', '16:26:34'),
+(2578, 2, 'Update', 'setting/menu', '47', '2017-01-15', '16:26:45'),
+(2579, 2, 'Show', 'setting/menu', '', '2017-01-15', '16:26:45'),
+(2580, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:27:27'),
+(2581, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:29:37'),
+(2582, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:30:09'),
+(2583, 2, 'Update', 'transaksi/pembelian', '1', '2017-01-15', '16:30:44'),
+(2584, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:30:44'),
+(2585, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:31:30'),
+(2586, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:32:24'),
+(2587, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:32:44'),
+(2588, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:41:30'),
+(2589, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:42:22'),
+(2590, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:45:04'),
+(2591, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:45:41'),
+(2592, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:47:42'),
+(2593, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '16:48:45'),
+(2594, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '16:48:47'),
+(2595, 2, 'Update', 'transaksi/pembelian', '1', '2017-01-15', '16:48:59'),
+(2596, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:48:59'),
+(2597, 2, 'Update', 'transaksi/pembelian', '1', '2017-01-15', '16:49:21'),
+(2598, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:49:21'),
+(2599, 2, 'Update', 'transaksi/pembelian', '1', '2017-01-15', '16:49:35'),
+(2600, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:49:35'),
+(2601, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:50:30'),
+(2602, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:51:34'),
+(2603, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:51:58'),
+(2604, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:52:34'),
+(2605, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:52:47'),
+(2606, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:53:36'),
+(2607, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:54:12'),
+(2608, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:54:26'),
+(2609, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:54:46'),
+(2610, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:55:30'),
+(2611, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:55:41'),
+(2612, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:55:47'),
+(2613, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:56:04'),
+(2614, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:56:20'),
+(2615, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:56:30'),
+(2616, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:56:39'),
+(2617, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:56:51'),
+(2618, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:57:13'),
+(2619, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:57:35'),
+(2620, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '16:59:41'),
+(2621, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:00:24'),
+(2622, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:03:55'),
+(2623, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:04:35'),
+(2624, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:04:37'),
+(2625, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:04:38'),
+(2626, 2, 'Show', 'setting/konfigurasi', '', '2017-01-15', '17:05:40'),
+(2627, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:06:22'),
+(2628, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:06:31'),
+(2629, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '17:06:37'),
+(2630, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '17:06:41'),
+(2631, 2, 'Add', 'transaksi/detil_pembelian', '3', '2017-01-15', '17:07:07'),
+(2632, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '17:07:07'),
+(2633, 2, 'Add', 'transaksi/detil_pembelian', '4', '2017-01-15', '17:07:28'),
+(2634, 2, 'Show', 'transaksi/detil_pembelian', '', '2017-01-15', '17:07:28'),
+(2635, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '17:07:48'),
+(2636, 2, 'Add Stock', 'transaksi/update_pembelian', '3', '2017-01-15', '17:07:48'),
+(2637, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '3', '2017-01-15', '17:07:48'),
+(2638, 2, 'Update PO Detail', 'transaksi/update_pembelian', '1', '2017-01-15', '17:07:48'),
+(2639, 2, 'Add Stock Mutasi', 'transaksi/update_pembelian', '4', '2017-01-15', '17:07:48'),
+(2640, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:07:49'),
+(2641, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '17:07:57'),
+(2642, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:08:06'),
+(2643, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:08:31'),
+(2644, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:08:45'),
+(2645, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:10:14'),
+(2646, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:10:24'),
+(2647, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:10:59'),
+(2648, 2, 'Add', 'transaksi/retur_pembelian', '1', '2017-01-15', '17:11:38'),
+(2649, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:11:38'),
+(2650, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:12:53'),
+(2651, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:12:55'),
+(2652, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:12:59'),
+(2653, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:16:11'),
+(2654, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:16:34'),
+(2655, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:17:11'),
+(2656, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:17:22'),
+(2657, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:17:33'),
+(2658, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:17:46'),
+(2659, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:18:01'),
+(2660, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:19:22'),
+(2661, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:19:52'),
+(2662, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:20:04'),
+(2663, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:20:33'),
+(2664, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:20:41'),
+(2665, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:20:43'),
+(2666, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:21:56'),
+(2667, 2, 'Add', 'transaksi/detil_retur', '1', '2017-01-15', '17:22:17'),
+(2668, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:22:17'),
+(2669, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:22:27'),
+(2670, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:24:35'),
+(2671, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:24:46'),
+(2672, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:25:08'),
+(2673, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:25:24'),
+(2674, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:25:27'),
+(2675, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:27:25'),
+(2676, 2, 'Remove', 'transaksi/detil_retur', '1', '2017-01-15', '17:27:32'),
+(2677, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:27:32'),
+(2678, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:45:58'),
+(2679, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:46:27'),
+(2680, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:46:32'),
+(2681, 2, 'Add', 'transaksi/detil_retur', '2', '2017-01-15', '17:46:49'),
+(2682, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:47:54'),
+(2683, 2, 'Add', 'transaksi/detil_retur', '3', '2017-01-15', '17:48:05'),
+(2684, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:48:44'),
+(2685, 2, 'Add', 'transaksi/detil_retur', '4', '2017-01-15', '17:48:54'),
+(2686, 2, 'Add Stock Mutasi', 'transaksi/detil_retur', '5', '2017-01-15', '17:48:54'),
+(2687, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:48:54'),
+(2688, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '17:48:58'),
+(2689, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:49:00'),
+(2690, 2, 'Add Stock Mutasi', 'transaksi/detil_retur', '6', '2017-01-15', '17:49:07'),
+(2691, 2, 'Remove', 'transaksi/detil_retur', '4', '2017-01-15', '17:49:07'),
+(2692, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:49:07'),
+(2693, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:49:10'),
+(2694, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '17:52:51'),
+(2695, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:52:52'),
+(2696, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:53:21'),
+(2697, 2, 'Add', 'transaksi/detil_retur', '5', '2017-01-15', '17:53:35'),
+(2698, 2, 'Add Stock Mutasi', 'transaksi/detil_retur', '7', '2017-01-15', '17:53:35'),
+(2699, 2, 'Show', 'transaksi/detil_retur', '', '2017-01-15', '17:53:35'),
+(2700, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:53:40'),
+(2701, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:54:00'),
+(2702, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '17:54:08'),
+(2703, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:54:22'),
+(2704, 2, 'Show', 'laporan/stocks_mutasi', '', '2017-01-15', '17:54:32'),
+(2705, 2, 'Show', 'laporan/stocks', '', '2017-01-15', '17:54:41'),
+(2706, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:55:24'),
+(2707, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:56:05'),
+(2708, 2, 'Update', 'setting/menu', '49', '2017-01-15', '17:56:42'),
+(2709, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:56:42'),
+(2710, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '17:56:51'),
+(2711, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:57:44'),
+(2712, 2, 'Update', 'setting/menu', '50', '2017-01-15', '17:57:54'),
+(2713, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:57:54'),
+(2714, 2, 'Update', 'setting/menu', '51', '2017-01-15', '17:58:04'),
+(2715, 2, 'Show', 'setting/menu', '', '2017-01-15', '17:58:04'),
+(2716, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:14'),
+(2717, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:24'),
+(2718, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:58:26'),
+(2719, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:28'),
+(2720, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:58:30'),
+(2721, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:32'),
+(2722, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:58:43'),
+(2723, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:44'),
+(2724, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:58:47'),
+(2725, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:48'),
+(2726, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:58:59'),
+(2727, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:59:00'),
+(2728, 2, 'Show', 'log/auditrail', '', '2017-01-15', '17:59:24'),
+(2729, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '17:59:28'),
+(2730, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '17:59:30'),
+(2731, 2, 'Show', 'setting/menu', '', '2017-01-15', '18:10:01'),
+(2732, 2, 'Add', 'setting/menu', '52', '2017-01-15', '18:10:41'),
+(2733, 2, 'Show', 'setting/menu', '', '2017-01-15', '18:10:41'),
+(2734, 2, 'Show', 'setting/menu', '', '2017-01-15', '18:10:45'),
+(2735, 2, 'Show', 'setting/grup_akses', '', '2017-01-15', '18:10:48'),
+(2736, 2, 'Update', 'setting/grup_akses', '239', '2017-01-15', '18:10:55'),
+(2737, 2, 'Show', 'setting/grup_akses', '', '2017-01-15', '18:10:55'),
+(2738, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:11:02'),
+(2739, 2, 'Add', 'transaksi/pengeluaran', '1', '2017-01-15', '18:11:40'),
+(2740, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:11:40'),
+(2741, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '18:16:23'),
+(2742, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:16:25'),
+(2743, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '18:16:28'),
+(2744, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '18:16:29'),
+(2745, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:18:58'),
+(2746, 2, 'Add', 'transaksi/pengeluaran', '2', '2017-01-15', '18:20:48'),
+(2747, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:20:48'),
+(2748, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:21:12'),
+(2749, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:21:15'),
+(2750, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:21:21'),
+(2751, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '18:21:25'),
+(2752, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '18:21:28'),
+(2753, 2, 'Show', 'setting/prefix', '', '2017-01-15', '18:21:38'),
+(2754, 2, 'Show', 'setting/prefix', '', '2017-01-15', '18:21:43'),
+(2755, 2, 'Export', 'setting/prefix', '', '2017-01-15', '18:25:20'),
+(2756, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '18:27:47'),
+(2757, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '18:27:53'),
+(2758, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '18:27:57'),
+(2759, 2, 'Show', 'setting/prefix', '', '2017-01-15', '18:27:59'),
+(2760, 2, 'Export', 'setting/prefix', '', '2017-01-15', '18:29:06'),
+(2761, 2, 'Show', 'setting/prefix', '', '2017-01-15', '18:29:08'),
+(2762, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:29:25'),
+(2763, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:29:30'),
+(2764, 2, 'Remove', 'transaksi/pengeluaran', '1', '2017-01-15', '18:29:34'),
+(2765, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:29:35'),
+(2766, 2, 'Add', 'transaksi/pengeluaran', '3', '2017-01-15', '18:29:46'),
+(2767, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '18:29:46'),
+(2768, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '20:42:33'),
+(2769, 2, 'Show', 'setting/menu', '', '2017-01-15', '20:45:11'),
+(2770, 2, 'Show', 'setting/menu', '', '2017-01-15', '20:45:22'),
+(2771, 2, 'Add', 'setting/menu', '53', '2017-01-15', '20:45:55'),
+(2772, 2, 'Show', 'setting/menu', '', '2017-01-15', '20:45:55'),
+(2773, 2, 'Show', 'setting/grup_akses', '', '2017-01-15', '20:46:00'),
+(2774, 2, 'Update', 'setting/grup_akses', '240', '2017-01-15', '20:46:06'),
+(2775, 2, 'Show', 'setting/grup_akses', '', '2017-01-15', '20:46:06'),
+(2776, 2, 'Show', 'transaksi/pendapatan_lain', '', '2017-01-15', '20:51:01'),
+(2777, 2, 'Add', 'transaksi/pendapatan_lain', '1', '2017-01-15', '20:52:11'),
+(2778, 2, 'Show', 'transaksi/pendapatan_lain', '', '2017-01-15', '20:52:11'),
+(2779, 2, 'Update', 'transaksi/pendapatan_lain', '1', '2017-01-15', '20:52:18'),
+(2780, 2, 'Show', 'transaksi/pendapatan_lain', '', '2017-01-15', '20:52:18'),
+(2781, 2, 'Remove', 'transaksi/pendapatan_lain', '1', '2017-01-15', '20:52:21'),
+(2782, 2, 'Show', 'transaksi/pendapatan_lain', '', '2017-01-15', '20:52:21'),
+(2783, 2, 'Show', 'transaksi/pembelian', '', '2017-01-15', '20:53:25'),
+(2784, 2, 'Show', 'transaksi/retur_pembelian', '', '2017-01-15', '20:53:26'),
+(2785, 2, 'Show', 'transaksi/pendapatan_lain', '', '2017-01-15', '20:53:27'),
+(2786, 2, 'Show', 'transaksi/pengeluaran', '', '2017-01-15', '20:53:28'),
+(2787, 2, 'Show', 'persediaan/stocks', '', '2017-01-15', '20:53:32'),
+(2788, 2, 'Show', 'persediaan/stocks_mutasi', '', '2017-01-15', '20:53:33');
 
 -- --------------------------------------------------------
 
@@ -1427,11 +2190,13 @@ INSERT INTO `sys_menu` (`id`, `id_induk`, `menu`, `uri`, `urutan`, `status`, `ic
 (44, 0, 'Transaksi', 'transaksi', 3, 1, 'shopping-cart'),
 (45, 44, 'Pembelian', 'transaksi/pembelian', 1, 1, ''),
 (46, 44, 'Detil Pembelian', 'transaksi/detil_pembelian', 0, 0, ''),
-(47, 44, 'Retur Pembelian', 'transaksi/retur', 2, 1, ''),
+(47, 44, 'Retur Pembelian', 'transaksi/retur_pembelian', 2, 1, ''),
 (48, 44, 'Update Pembelian', 'transaksi/update_pembelian', 0, 0, ''),
-(49, 0, 'Laporan', 'laporan', 4, 1, 'bar-chart'),
-(50, 49, 'Barang Persedian', 'laporan/stocks', 5, 1, ''),
-(51, 49, 'Mutasi Barang Persediaan', 'laporan/stocks_mutasi', 6, 1, '');
+(49, 0, 'Persediaan', 'persediaan', 4, 1, 'bar-chart'),
+(50, 49, 'Barang Persedian', 'persediaan/stocks', 5, 1, ''),
+(51, 49, 'Mutasi Barang Persediaan', 'persediaan/stocks_mutasi', 6, 1, ''),
+(52, 44, 'Pengeluaran', 'transaksi/pengeluaran', 6, 1, ''),
+(53, 44, 'Pendapatan Lain', 'transaksi/pendapatan_lain', 5, 1, '');
 
 --
 -- Triggers `sys_menu`
@@ -1491,50 +2256,6 @@ INSERT INTO `units` (`id`, `unit_name`, `status`) VALUES
 (2, 'Pcs', 1),
 (1, 'Unit', 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `nama` varchar(50) NOT NULL,
-  `email` varchar(80) DEFAULT NULL,
-  `hp` varchar(30) DEFAULT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `status` int(1) NOT NULL DEFAULT '0',
-  `alamat` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `nama`, `email`, `hp`, `username`, `password`, `status`, `alamat`) VALUES
-(1, 'Admin', 'bl4ck4nt@gmail.com', '+6287854750809', 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, NULL),
-(2, 'Nama 2', 'email1@gmail.com', '08781231111', 'user1', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 1, NULL),
-(3, 'Yoga', 'email1@gmail.com', '08781231111', 'yoog', '829b36babd21be519fa5f9353daf5dbdb796993e', 1, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users_privilage`
---
-
-CREATE TABLE `users_privilage` (
-  `id` int(1) NOT NULL,
-  `menu_id` int(1) NOT NULL,
-  `user_id` int(1) DEFAULT NULL,
-  `_view` int(1) DEFAULT '0',
-  `_insert` int(1) DEFAULT '0',
-  `_update` int(1) DEFAULT '0',
-  `_delete` int(1) DEFAULT '0',
-  `date_create` datetime DEFAULT NULL,
-  `date_update` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 --
 -- Indexes for dumped tables
 --
@@ -1551,6 +2272,18 @@ ALTER TABLE `brands`
 --
 ALTER TABLE `customers`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `expenses`
+--
+ALTER TABLE `expenses`
+  ADD PRIMARY KEY (`expense_id`);
+
+--
+-- Indexes for table `income_others`
+--
+ALTER TABLE `income_others`
+  ADD PRIMARY KEY (`income_other_id`);
 
 --
 -- Indexes for table `menus`
@@ -1627,15 +2360,29 @@ ALTER TABLE `provider`
 -- Indexes for table `purchase_orders`
 --
 ALTER TABLE `purchase_orders`
-  ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`purchase_order_id`),
   ADD KEY `no_po` (`no_po`);
 
 --
 -- Indexes for table `purchase_order_details`
 --
 ALTER TABLE `purchase_order_details`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `purchase_orders_id` (`purchase_orders_id`),
+  ADD PRIMARY KEY (`purchase_order_detail_id`),
+  ADD KEY `purchase_orders_id` (`purchase_order_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `returs`
+--
+ALTER TABLE `returs`
+  ADD PRIMARY KEY (`retur_id`);
+
+--
+-- Indexes for table `retur_details`
+--
+ALTER TABLE `retur_details`
+  ADD PRIMARY KEY (`retur_detail_id`),
+  ADD KEY `returs_id` (`retur_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
@@ -1724,19 +2471,6 @@ ALTER TABLE `units`
   ADD UNIQUE KEY `idx` (`id`);
 
 --
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`username`),
-  ADD UNIQUE KEY `id` (`id`);
-
---
--- Indexes for table `users_privilage`
---
-ALTER TABLE `users_privilage`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1750,6 +2484,16 @@ ALTER TABLE `brands`
 --
 ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `expenses`
+--
+ALTER TABLE `expenses`
+  MODIFY `expense_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `income_others`
+--
+ALTER TABLE `income_others`
+  MODIFY `income_other_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `menus`
 --
@@ -1809,12 +2553,22 @@ ALTER TABLE `provider`
 -- AUTO_INCREMENT for table `purchase_orders`
 --
 ALTER TABLE `purchase_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `purchase_order_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `purchase_order_details`
 --
 ALTER TABLE `purchase_order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `purchase_order_detail_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `returs`
+--
+ALTER TABLE `returs`
+  MODIFY `retur_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `retur_details`
+--
+ALTER TABLE `retur_details`
+  MODIFY `retur_detail_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `settings`
 --
@@ -1824,7 +2578,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `stocks`
 --
 ALTER TABLE `stocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `stocks_history`
 --
@@ -1834,7 +2588,7 @@ ALTER TABLE `stocks_history`
 -- AUTO_INCREMENT for table `stocks_mutasi`
 --
 ALTER TABLE `stocks_mutasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
@@ -1844,12 +2598,12 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT for table `sys_config`
 --
 ALTER TABLE `sys_config`
-  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `sys_grup_akses`
 --
 ALTER TABLE `sys_grup_akses`
-  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=239;
+  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
 --
 -- AUTO_INCREMENT for table `sys_grup_user`
 --
@@ -1859,12 +2613,12 @@ ALTER TABLE `sys_grup_user`
 -- AUTO_INCREMENT for table `sys_log`
 --
 ALTER TABLE `sys_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2124;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2789;
 --
 -- AUTO_INCREMENT for table `sys_menu`
 --
 ALTER TABLE `sys_menu`
-  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 --
 -- AUTO_INCREMENT for table `sys_user`
 --
@@ -1875,16 +2629,6 @@ ALTER TABLE `sys_user`
 --
 ALTER TABLE `units`
   MODIFY `id` int(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `users_privilage`
---
-ALTER TABLE `users_privilage`
-  MODIFY `id` int(1) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
