@@ -55,6 +55,21 @@ class User extends MY_Controller {
         $this->_CFG->add_column("Grup User", $grupUser);
 
         $status = new Datagridcolumn();
+        $status->set_FIELD_DB("a.is_device");
+        $status->set_FIELD_TYPE($status->get_ENUM_TYPE());
+        $status->set_FORM_ID("is_device");
+        $status->set_ENUM_DEFAULT_VALUE(
+                array("1" => "Device",
+                    "0" => "User"
+        ));
+        $status->set_STYLE(
+                array("1" => '<span class="label label-warning">Device</span>',
+                    "0" => '<span class="label label-success">User</span>'
+        ));
+        $status->set_SIZE(1);
+        $this->_CFG->add_column("Type", $status);
+        
+        $status = new Datagridcolumn();
         $status->set_FIELD_DB("a.status");
         $status->set_FIELD_TYPE($status->get_ENUM_TYPE());
         $status->set_FORM_ID("status");
@@ -97,8 +112,8 @@ class User extends MY_Controller {
     function index() {
         $data = array();
 
-        $whr = array("is_merchant" => 0);
-        $this->_CFG->set_WHR_TBL($whr);
+//        $whr = array("is_device" => 0);
+//        $this->_CFG->set_WHR_TBL($whr);
 
         //initiate datagrid
         $dg = new Datagrid();
