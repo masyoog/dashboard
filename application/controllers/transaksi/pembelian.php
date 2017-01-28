@@ -39,6 +39,11 @@ class Pembelian extends MY_Controller {
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("date(a.create_at)");
         $nama->set_FIELD_DB_ALIAS("created_at");
+        $nama->set_DEFAULT_SEARCH(TRUE);
+        $nama->set_DEFAULT_SEARCH_TYPE($nama->get_DATE_RANGE_TYPE());
+        $nama->set_DEFAULT_SEARCH_DEFAULT_VALUE(date("m/01/Y")." - ".date("m/d/Y"));
+        $nama->set_DEFAULT_SEARCH_WITH_IGNORE_OPTION(TRUE);
+        $nama->set_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE("1");
         $nama->set_FORM_ID("create_at");
         $this->_CFG->add_column("Created Date", $nama);
         
@@ -152,6 +157,7 @@ class Pembelian extends MY_Controller {
 
         $dg->set_config($this->_CFG);
         $data["pages"] = $dg->render();
+//        echo $this->db->last_query();
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
         $this->auditrail("Show");
