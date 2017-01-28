@@ -47,6 +47,7 @@ class Retur_pembelian extends MY_Controller {
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("date(a.create_at)");
         $nama->set_FIELD_DB_ALIAS("created_at");
+        $nama->set_FIELD_TYPE($nama->get_DATE_TYPE());
         $nama->set_FORM_ID("create_at");
         $this->_CFG->add_column("Created Date", $nama);
 
