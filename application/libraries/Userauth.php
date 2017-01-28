@@ -97,7 +97,7 @@ class Userauth {
         $username = $this->CI->base_model->db->escape_str($username);
         $password = $this->CI->base_model->db->escape_str($password);
 
-        $result = $this->CI->base_model->list_single_data("*", $this->_table_users, "", array('username' => $username));
+        $result = $this->CI->base_model->list_single_data("*", $this->_table_users, "", array('username' => $username, 'is_device'=>0));
 
 
         $is_userexist = false;
