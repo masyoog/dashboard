@@ -44,7 +44,49 @@ class Datagridcolumn {
     private $_WITH_NULL_OPTION = TRUE;
     private $_TRUNCATABLE = FALSE;
     private $_ESCAPESPECIALCHAR = FALSE;
-
+    private $_DEFAULT_SEARCH = FALSE;
+    private $_DEFAULT_SEARCH_TYPE = "";
+    private $_DEFAULT_SEARCH_DEFAULT_VALUE = "";
+    private $_DEFAULT_SEARCH_WITH_IGNORE_OPTION = FALSE;
+    private $_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE = "1";
+    
+    public function set_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE($_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE){
+        $this->_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE = $_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE;
+    }
+    
+    public function get_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE(){
+        return $this->_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE;
+    }
+    
+    public function set_DEFAULT_SEARCH_DEFAULT_VALUE($_DEFAULT_SEARCH_DEFAULT_VALUE){
+        $this->_DEFAULT_SEARCH_DEFAULT_VALUE = $_DEFAULT_SEARCH_DEFAULT_VALUE;
+    }
+    
+    public function get_DEFAULT_SEARCH_DEFAULT_VALUE(){
+        return $this->_DEFAULT_SEARCH_DEFAULT_VALUE;
+    }
+    
+    public function set_DEFAULT_SEARCH($DEFAULT_SEARCH){
+        $this->_DEFAULT_SEARCH = $DEFAULT_SEARCH;
+    }
+    
+    public function get_DEFAULT_SEARCH(){
+        return $this->_DEFAULT_SEARCH;
+    }
+    public function set_DEFAULT_SEARCH_TYPE($_DEFAULT_SEARCH_TYPE){
+        $this->_DEFAULT_SEARCH_TYPE = $_DEFAULT_SEARCH_TYPE;
+    }
+    
+    public function get_DEFAULT_SEARCH_TYPE(){
+        return $this->_DEFAULT_SEARCH_TYPE;
+    }
+    public function set_DEFAULT_SEARCH_WITH_IGNORE_OPTION($_DEFAULT_SEARCH_WITH_IGNORE_OPTION){
+        $this->_DEFAULT_SEARCH_WITH_IGNORE_OPTION = $_DEFAULT_SEARCH_WITH_IGNORE_OPTION;
+    }
+    
+    public function get_DEFAULT_SEARCH_WITH_IGNORE_OPTION(){
+        return $this->_DEFAULT_SEARCH_WITH_IGNORE_OPTION;
+    }
     public function set_TRUNCATABLE($_TRUNCATABLE){
         $this->_TRUNCATABLE = $_TRUNCATABLE;
     }
@@ -77,7 +119,10 @@ class Datagridcolumn {
             case $this->_DOUBLE_TYPE :
                 $out = array("=", "!=", "<", ">");
             break;
-            case $this->_DATE_TYPE :
+            case $this->_DATE_RANGE_TYPE :
+                $out = array('DIANTARA');
+            break;    
+            case $this->_DATE_TYPE :            
             case $this->_TIMESTAMP_TYPE :
             case $this->_MONTHYEAR_TYPE:
                 $out = array("=", "!=", "<", ">");
@@ -151,6 +196,11 @@ class Datagridcolumn {
     public function get_DATE_TYPE() {
         return $this->_DATE_TYPE;
     }
+    
+    public function get_DATE_RANGE_TYPE() {
+        return $this->_DATE_RANGE_TYPE;
+    }
+    
     
     public function get_FILE_TYPE() {
         return $this->_FILE_TYPE;

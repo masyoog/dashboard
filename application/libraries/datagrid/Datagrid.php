@@ -18,9 +18,6 @@ class Datagrid {
     private $_MODEL;
     private $_PAGE_TITLE = "";
     private $_RIGHT_HEADER = "";
-//    private $_SEARCH_FORM;
-//    private $_BTN_COMMAND;
-//    private $_BTN_GRID_COMMAND;
     private $_ADDITIONAL_SCRIPT = "";
     private $_START_ITEM;
     private $_END_ITEM;
@@ -28,7 +25,9 @@ class Datagrid {
     private $_LIST_ACCESS;
     private $_DISABLE_SEARCH = FALSE;
     private $_FORM_TITE = "";
-    
+
+//    private $_DEFAULT_FILTER = array();
+
 
     function __construct() {
         $this->CI = & get_instance();
@@ -40,14 +39,26 @@ class Datagrid {
         return _get_raw_object($this->_LIST_ACCESS, $type) == "1" ? TRUE : FALSE;
     }
 
+//    public function get_DEFAULT_FILTER() {
+//        return $this->_DEFAULT_FILTER;
+//    }
+//
+//    public function set_DEFAULT_FILTER($filter, $add = TRUE) {
+//        if ( $add ){
+//            $this->_DEFAULT_FILTER = $this->_DEFAULT_FILTER + $filter;        
+//        } else {
+//            $this->_DEFAULT_FILTER = $filter;
+//        }
+//    }
+
     public function get_DISABLE_SEARCH() {
         return $this->_DISABLE_SEARCH;
     }
 
-    public function set_DISABLE_SEARCH($_DISABLE_SEARCH=TRUE) {
-        $this->_DISABLE_SEARCH = $_DISABLE_SEARCH;        
+    public function set_DISABLE_SEARCH($_DISABLE_SEARCH = TRUE) {
+        $this->_DISABLE_SEARCH = $_DISABLE_SEARCH;
     }
-    
+
     public function get_ADDITIONAL_SCRIPT() {
         return $this->_ADDITIONAL_SCRIPT;
     }
@@ -119,6 +130,7 @@ class Datagrid {
     private function get_where_form_search() {
         $params = $this->get_query_string();
         $fields = _get_raw_item($params, 'srcKolom');
+        $enabledDefaultSearch = _get_raw_item($params, 'srcEnable');
         $values = _get_raw_item($params, 'srcCari');
         $operans = _get_raw_item($params, 'srcOperan');
 
@@ -139,33 +151,36 @@ class Datagrid {
                 if ($field == "") {
                     continue;
                 }
+
+
+
                 $cfg = _get_raw_item($column, $field);
                 $value = trim(_get_raw_item($values, $i));
                 $operan = trim(_get_raw_item($operans, $i));
+                $formId = $cfg->get_FORM_ID();
 
-                if ($field == "" || $value == "" || $operan == "") {
+                if ($field == "" || $value == "" || $operan == "" || _get_raw_item($enabledDefaultSearch, $formId) == "0") {
                     continue;
                 }
 
                 $fieldDB = $cfg->get_FIELD_DB();
-                $fieldType = $cfg->get_FIELD_TYPE();
+                $fieldType = $cfg->get_DEFAULT_SEARCH_TYPE() == "" ? $cfg->get_FIELD_TYPE() : $cfg->get_DEFAULT_SEARCH_TYPE();
                 $class = $cfg->get_CLASS();
                 $value = str_replace("'", "''", $value);
 
                 if ($value != "") {
                     if ($fieldType == 'DATE') {
-                        if ($class == "elm-date-range") {
-                            $value = explode("-", $value);
-                            $value1 = str_replace("/", "-", _get_raw_item($value, 0));
-                            $value1 = date("Y-m-d", strtotime($value1));
-                            $value2 = str_replace("/", "-", _get_raw_item($value, 1));
-                            $value2 = date("Y-m-d", strtotime($value2));
-                            $outTemp = array($fieldDB . " >= " => $value1, $fieldDB . " <= " => $value2);
-                        } else {
-                            $value = str_replace("/", "-", $value);
-                            $value = date("Y-m-d", strtotime($value));
-                            $outTemp = array($fieldDB . " " . $operan => $value);
-                        }
+                        $value = str_replace("/", "-", $value);
+                        $value = date("Y-m-d", strtotime($value));
+                        $outTemp = array($fieldDB . " " . $operan => $value);
+                    } else if ($fieldType == 'DATERANGE') {
+                        $value = explode("-", $value);
+//                        _debug_var($value);
+                        $value1 = str_replace("/", "-", _get_raw_item($value, 0));
+                        $value1 = date("Y-m-d", strtotime($value1));
+                        $value2 = str_replace("/", "-", _get_raw_item($value, 1));
+                        $value2 = date("Y-m-d", strtotime($value2));
+                        $outTemp = array($fieldDB . " >= " => $value1, $fieldDB . " <= " => $value2);
                     } else if ($fieldType == $cfg->get_TIMESTAMP_TYPE()) {
                         $value = str_replace("/", "-", $value);
                         $value = date("Y-m-d", strtotime($value));
@@ -329,12 +344,12 @@ class Datagrid {
         $rs = $this->_MODEL->list_data($fld, $this->_CFG->get_PRIMARY_TBL(), $this->_CFG->get_JOIN_TBL(), $whr, $this->_CFG->get_ORDER_TBL(), $itemPerPage, $offset);
         $this->CI->session->set_userdata(array(md5("lastQuery" . $this->CI->router->directory . $this->CI->router->class) => $this->_MODEL->_getLastQuery()));
 
-        
 
-        if ( !$this->_DISABLE_SEARCH ){
+
+        if (!$this->_DISABLE_SEARCH) {
             $out .= $this->get_filter_form();
         }
-        
+
         $out .= $this->get_data_grid($rs);
 
         $out .= '</section>';
@@ -342,13 +357,12 @@ class Datagrid {
         return $out;
     }
 
-    
     function render_form($mode, $key = "", $errorMsg = "", $isPopUp = FALSE, $addContent = "") {
 
         $out = "";
-        
+
         $title = $mode == "add" ? "Tambah Data" : ($mode != "" ? $mode : "Ubah Data");
-        if ( $this->_FORM_TITE == ""){
+        if ($this->_FORM_TITE == "") {
             $this->set_form_title($title);
         }
         $key = _sanitaze_input($key);
@@ -477,33 +491,32 @@ class Datagrid {
 
                     $requiredMark = $property->get_REQUIRED() ? '<span class="fa fa-asterisk text-info"></span>' : "";
                     $maxLength = intval($property->get_SIZE()) < 1 ? '' : 'maxlength="' . intval($property->get_SIZE()) . '"';
-                    
+
                     $valueDB = $isFormError ? $this->CI->input->post($property->get_FORM_ID()) : _get_raw_object($rs, _replace_before($property->get_FIELD_DB(), "."));
                     if ($property->get_FIELD_TYPE() == $property->get_ENUM_TYPE()) {
                         $out .= '<div class="form-group form-group-sm">';
                         $out .= '<label class="control-label" for="' . $property->get_FORM_ID() . '">' . $fieldName . '&nbsp;&nbsp;&nbsp;&nbsp;' . $requiredMark . '&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa"></i></label>';
                         $out .= '<select class="form-control elm-select' . $class . '" name="' . $property->get_FORM_ID() . '" id="' . $property->get_FORM_ID() . '"  ' . $required . '>';
 
-                        
+
                         if (is_array($property->get_ENUM_DEFAULT_VALUE())) {
-                            
+
                             if (strpos($class, "selectize") !== FALSE) {
                                 $valueDB = $valueDB == "" ? "0" : $valueDB;
                                 $this->set_ADDITIONAL_SCRIPT('var $' . strtoupper($property->get_FORM_ID()) . ' = $("#' . $property->get_FORM_ID() . '").selectize();$' . strtoupper($property->get_FORM_ID()) . '[0].selectize.setValue("' . $valueDB . '");');
-                                
-                                    if ($property->get_WITH_NULL_OPTION()){
-                                        $out .= '<option value="0">&nbsp;Pilih&nbsp;</option>';
-                                    }
-                                
-                            }else {
-                            
+
+                                if ($property->get_WITH_NULL_OPTION()) {
+                                    $out .= '<option value="0">&nbsp;Pilih&nbsp;</option>';
+                                }
+                            } else {
+
                                 $out .= '<option value="">&nbsp;Pilih&nbsp;</option>';
                             }
 
                             foreach ($property->get_ENUM_DEFAULT_VALUE() as $value => $text) {
 
                                 if (is_object($text)) {
-                                    
+
                                     if (_get_raw_object($text, "kunci") == $valueDB) {
                                         $out .= '<option value="' . _get_raw_object($text, "kunci") . '" data-field-type="CHAR" selected>' . _get_raw_object($text, "nilai") . '</option>';
                                     } else {
@@ -517,7 +530,6 @@ class Datagrid {
                                         $out .= '<option value="' . $value . '" data-field-type="CHAR" >' . $text . '</option>';
                                     }
                                 }
-
                             }
                         }
 
@@ -829,7 +841,7 @@ class Datagrid {
 
 
         $buttons = $this->_CFG->get_grid_button();
-        
+
         $url = site_url($this->CI->router->fetch_directory() . $this->CI->router->fetch_class());
 
 
@@ -890,7 +902,7 @@ class Datagrid {
         foreach ($column as $fieldName => $property) {
             if ($property->get_VISIBLE()) {
                 if ($property->get_CHECKBOX_TYPE() == $property->get_FIELD_TYPE() OR $property->get_ENUM_TYPE() == $property->get_FIELD_TYPE()) {
-                    $out .= $this->_render_column_enum($row, $property);                    
+                    $out .= $this->_render_column_enum($row, $property);
                 } else {
                     $out .= $this->_render_column($row, $property);
                 }
@@ -957,22 +969,65 @@ class Datagrid {
         return $out;
     }
 
-    function get_filter_form_elm($nama = "", $nilai = "", $operan = "") {
+    private function getCheckBoxDefaultSearch($property, $nama) {
+
+        $isSubmit = $this->get_query_string("srcKolom");
+        $isSubmit = $this->get_query_string("srcKolom");
+        $checked = _get_raw_item($this->CI->input->get("srcEnable"), $property->get_FORM_ID());
+        
+        if (!$isSubmit) {
+            $checked = $checked == "" ? $property->get_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE() : $checked;
+        }
+        $enabled = $checked;
+
+        $checked = $checked == "1" ? "checked" : "";
+
+        $out = '<div class="form-group form-group-sm">';
+        $out .= '<div class="checkbox">';
+        $out .= '<label class="control-label">';
+        $out .= '<input name="srcCtrlEnable' . $property->get_FORM_ID() . '" id="srcCtrlEnable' . $property->get_FORM_ID() . '"  type="checkbox" value="1" ' . $checked . '>';
+        $out .= '&nbsp;&nbsp;&nbsp;Sertakan Filter ' . $nama . '&nbsp;&nbsp;&nbsp;';
+        $out .= '<input type="hidden" name="srcEnable[' . $property->get_FORM_ID() . ']" id="srcEnable' . $property->get_FORM_ID() . '" value="' . $enabled . '">';
+        $out .= '</div>';
+        $out .= '</div>';
+        $addScript = '$("#srcCtrlEnable' . $property->get_FORM_ID() . '").on("ifChecked", function(event){ 
+//                        var nextElm = $(this).parents(".form-group-sm").nextAll().children();
+//                        nextElm.show();
+                        $("#srcEnable' . $property->get_FORM_ID() . '").val("1");
+                    });
+                    $("#srcCtrlEnable' . $property->get_FORM_ID() . '").on("ifUnchecked", function(event){ 
+//                        var nextElm = $(this).parents(".form-group-sm").nextAll().children();
+//                        nextElm.hide();	
+                        $("#srcEnable' . $property->get_FORM_ID() . '").val("0");
+                    });';
+        $this->set_ADDITIONAL_SCRIPT($addScript);
+        return $out;
+    }
+
+    function get_filter_form_elm($nama = "", $nilai = "", $operan = "", $isDefault = FALSE) {
+
+        $columns = $this->_CFG->get_column();
+
+        $column = _get_raw_item($columns, $nama);
 
         $out = '';
         $out .= '<div class="row" style="margin-top: 7px;">';
+        if ($isDefault) {
+            $out .= $this->getCheckBoxDefaultSearch($column, $nama);
+        }
         $out .= '<div class="form-group srcKolomWrapper">';
-        $out .= '<label for="srcKolom">Cari dikolom : </label>';
+
+        $out .= '<label for="srcKolom">' . ($isDefault ? "" : "Cari Dikolom : ") . '</label>';
         $out .= '<select class="form-control input-sm srcKolom" name="srcKolom[]">';
-        $out .= '<option value="">- Pilih -</option>';
-        $columns = $this->_CFG->get_column();
-        $column = _get_raw_item($columns, $nama);
+        if (!$isDefault) {
+            $out .= '<option value="">- Pilih -</option>';
+        }
 
-
-        $data_field_type = $column == "" ? "" : $column->get_FIELD_TYPE();
+        $data_field_type = $column == "" ? "" : ($isDefault && $column->get_DEFAULT_SEARCH_TYPE() != "" ? $column->get_DEFAULT_SEARCH_TYPE() : $column->get_FIELD_TYPE());
 
         if (count($columns) > 0) {
             foreach ($columns as $fieldName => $property) {
+
                 $selected = $fieldName == $nama ? "selected" : "";
 
                 if ("DATE" == $property->get_FIELD_TYPE()) {
@@ -980,19 +1035,32 @@ class Datagrid {
                 } else {
                     $field_type = $property->get_FIELD_TYPE();
                 }
-                $out .= '<option value="' . $fieldName . '" data-field-type="' . $field_type . '" ' . $selected . '>' . $fieldName . '</option>';
+
+                if ($isDefault) {
+                    if ($selected != "") {
+                        $out .= '<option value="' . $fieldName . '" data-field-type="' . $field_type . '" ' . $selected . '>' . $fieldName . '</option>';
+                    }
+                } else {
+                    if ($property->get_DEFAULT_SEARCH()) {
+                        continue;
+                    }
+                    $out .= '<option value="' . $fieldName . '" data-field-type="' . $field_type . '" ' . $selected . '>' . $fieldName . '</option>';
+                }
             }
         }
 
         $out .= '</select>';
+
         $out .= '</div>';
 
 
-        $srcOperan = $column == "" ? "" : $column->get_search_operan();
+        $srcOperan = $column == "" ? "" : $column->get_search_operan($data_field_type);
         $srcOperan = $srcOperan == "" ? array("=", "!=", "SEPERTI", "TIDAK SEPERTI") : $srcOperan;
         $out .= '<div class="form-group srcOperanWrapper">';
         $out .= '<select class="form-control input-sm srcOperan" name="srcOperan[]">';
-        $out .= '<option value="">- Pilih -</option>';
+        if (!$isDefault) {
+            $out .= '<option value="">- Pilih -</option>';
+        }
         foreach ($srcOperan as $operator) {
             $selected = $operator == $operan ? "selected" : "";
             $out .= '<option value="' . $operator . '" ' . $selected . '>' . $operator . '</option>';
@@ -1009,6 +1077,14 @@ class Datagrid {
                 }
             }
             $srcCariElmTemp .= '</select>';
+        } else if ("DATERANGE" == $data_field_type) {
+            
+            $class = $column->get_CLASS();
+            $width = "200";
+            $srcCariElmTemp = '<div class="input-group input-group-sm" style="width: ' . $width . 'px;">';
+            $srcCariElmTemp .= '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>';
+            $srcCariElmTemp .= '<input type="text" class="form-control elm-date-range ' . $class . ' srcCari" name="srcCari[]" placeholder="Tanggal" maxlength="32" value="' . $nilai . '" />';
+            $srcCariElmTemp .= '</div>';
         } else if ("DATE" == $data_field_type ||
                 "MONTHYEAR" == $data_field_type ||
                 "TIMESTAMP" == $data_field_type
@@ -1042,10 +1118,12 @@ class Datagrid {
      */
 
     function get_filter_form() {
+
         $params = $this->get_query_string("srcKolom");
         $values = $this->get_query_string("srcCari");
         $operan = $this->get_query_string("srcOperan");
         $columns = $this->_CFG->get_column();
+
         $addscript = "";
         $out = "";
         $out .= '<section class="content">';
@@ -1055,11 +1133,29 @@ class Datagrid {
 
         if ($params != "") {
             foreach ($params as $idx => $field) {
-                $elm = $this->get_filter_form_elm($field, _get_raw_item($values, $idx), _get_raw_item($operan, $idx));
+
+                $column = _get_raw_item($columns, $field);
+                
+                if ($column) {
+                    $elm = $this->get_filter_form_elm($field, _get_raw_item($values, $idx), _get_raw_item($operan, $idx), $column->get_DEFAULT_SEARCH());
+                } else {
+                    $elm = $this->get_filter_form_elm("", "");
+                }
                 $out .= $elm;
             }
         } else {
-            $elm = $this->get_filter_form_elm("", "");
+            $elm = "";
+            if (count($columns) > 0) {
+
+                foreach ($columns as $fieldName => $property) {
+                    if ($property->get_DEFAULT_SEARCH()) {
+                        $elm .= $this->get_filter_form_elm($fieldName, $property->get_DEFAULT_SEARCH_DEFAULT_VALUE(), "", TRUE);
+                    }
+                }
+            }
+
+            $elm .= $this->get_filter_form_elm("", "");
+
             $out .= $elm;
         }
 
@@ -1067,13 +1163,16 @@ class Datagrid {
             $srcCariElm = array();
             $srcOperanElm = array();
             foreach ($columns as $fieldName => $property) {
+                if ($property->get_DEFAULT_SEARCH()) {
+                    continue;
+                }
                 $data_field_type = "";
                 if ("DATE" == $property->get_FIELD_TYPE()) {
                     $data_field_type = $property->get_CLASS() == "" ? "DATE" : $property->get_CLASS();
                 } else {
                     $data_field_type = $property->get_FIELD_TYPE();
                 }
-                
+
                 if ("ENUM" == $property->get_FIELD_TYPE()) {
                     $srcCariElmTemp = '<select class="form-control input-sm srcCari" name="srcCari[]">';
                     if (count($property->get_ENUM_DEFAULT_VALUE()) > 0) {
@@ -1084,9 +1183,9 @@ class Datagrid {
                     $srcCariElmTemp .= '</select>';
                 } else if (
                         "DATE" == $property->get_FIELD_TYPE() ||
-                        $property->get_MONTHYEAR_TYPE() == $property->get_FIELD_TYPE() || 
+                        $property->get_MONTHYEAR_TYPE() == $property->get_FIELD_TYPE() ||
                         "TIMESTAMP" == $property->get_FIELD_TYPE()) {
-                    
+
                     $class = $property->get_CLASS() == "" ? "elm-date" : $property->get_CLASS();
                     $width = "165";
                     $srcCariElmTemp = '<div class="input-group input-group-sm" style="width: ' . $width . 'px;">';
@@ -1094,12 +1193,12 @@ class Datagrid {
                     $srcCariElmTemp .= '<input type="text" class="form-control ' . $class . ' srcCari" name="srcCari[]" placeholder="Tanggal" value=""/>';
                     $srcCariElmTemp .= '</div>';
                 } else {
-                    
-                    $srcCariElmTemp = '<input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="16" value="">';
+
+                    $srcCariElmTemp = '<input type="text" class="form-control input-sm srcCari" name="srcCari[]" placeholder="Kata Kunci" maxlength="32" value="">';
                 }
 
                 $srcCariElm[$fieldName] = $srcCariElmTemp;
-               
+
                 $srcOperanElmTemp = '<select class="form-control input-sm srcOperan" name="srcOperan[]">';
                 if (count($property->get_search_operan()) > 0) {
                     foreach ($property->get_search_operan() as $operan) {
@@ -1126,7 +1225,7 @@ class Datagrid {
                     if (elmSrcCari[val] !== undefined ){
                         elmWrapper.html(elmSrcCari[val]);
                     } else{
-                        elmWrapper.html("<input type=\"text\" class=\"form-control input-sm\" name=\"srcCari[]\" placeholder=\"Kata Kunci\" maxlength=\"16\" value=\"\">");
+                        elmWrapper.html("<input type=\"text\" class=\"form-control input-sm\" name=\"srcCari[]\" placeholder=\"Kata Kunci\" maxlength=\"32\" value=\"\">");
                     }
 
                     if (elmSrcOperan[val] !== undefined ){
@@ -1281,7 +1380,7 @@ class Datagrid {
                 "action" => ""
             ));
         }
-        
+
         $buttons = $this->_CFG->get_COMMAND_BUTTON();
 
 
@@ -1295,11 +1394,11 @@ class Datagrid {
             $option = _get_raw_item($property, "option");
             $keys = "";
             if ("" != $type) {
-                $out .= '<button '. $option .' type="' . $type . '" class="btn ' . $class . '" name="' . $name . '" value="' . $btn . '" ' . $action . '>' . $btn . '</button>&nbsp;';
+                $out .= '<button ' . $option . ' type="' . $type . '" class="btn ' . $class . '" name="' . $name . '" value="' . $btn . '" ' . $action . '>' . $btn . '</button>&nbsp;';
             }
         }
 
-        $out = '<div style="text-align: right;">'. $out .'</div>';
+        $out = '<div style="text-align: right;">' . $out . '</div>';
         return $out;
     }
 
@@ -1377,8 +1476,8 @@ class Datagrid {
         if (TRUE == $as_is) {
             $this->_FORM_TITE = $form_title;
         } else {
-            $this->_FORM_TITE = '<h4 class="box-title text-orange">'. $form_title.'</h4>';        
-        
+            $this->_FORM_TITE = '<h4 class="box-title text-orange">' . $form_title . '</h4>';
         }
     }
+
 }
