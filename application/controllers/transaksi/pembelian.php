@@ -102,15 +102,15 @@ class Pembelian extends MY_Controller {
         $status->set_ENUM_DEFAULT_VALUE(
                 array(
                     "0" => "New",
-//                    "1" => "Sent to Supplier",
                     "2" => "Close PO",
         ));
         $status->set_STYLE(
                 array("2" => '<span class="label label-success">Closed</span>',
-//                    "1" => '<span class="label label-warning">Sent to Supplier</span>',
                     "0" => '<span class="label label-primary">New</span>'
         ));
         $status->set_SIZE(1);
+        $status->set_DEFAULT_SEARCH(TRUE);
+        $status->set_DEFAULT_SEARCH_DEFAULT_VALUE("2");
         $this->_CFG->add_column("Status", $status);
 
         $nama = new Datagridcolumn();
@@ -151,13 +151,17 @@ class Pembelian extends MY_Controller {
 
     function index() {
         $data = array();
-
+        
         //initiate datagrid
         $dg = new Datagrid();
 
         $dg->set_config($this->_CFG);
-        $data["pages"] = $dg->render();
-//        echo $this->db->last_query();
+        $data["pages"] = $dg->render();        
+        $dg->set_ADDITIONAL_SCRIPT("setDateRangeValue('". date("m/01/Y") . "', '". date("m/d/Y") . "');");
+        if ( $dg->get_query_string() == "" ){
+            //force submit on first load to apply default filter
+            $dg->set_ADDITIONAL_SCRIPT("$('#frmSearch').submit();");
+        }
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
         $this->auditrail("Show");

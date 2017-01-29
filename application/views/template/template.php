@@ -367,18 +367,20 @@
                 function setDateRangeValue(start, end, label) {
                     var startDate = moment(start);
                     var endDate = moment(end);
+                    console.log("lala");
                     $('.elm-date-range').val(startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY'));
                 }
-
                 $('.elm-date-range').daterangepicker(
-                        {
-                            locale: {
-                                format: 'DD/MM/YYYY'
-                            },
-                            "showDropdowns": true,
-                        },
-                        setDateRangeValue
-                        );
+                {
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    },
+                    "showDropdowns": true,
+                },setDateRangeValue
+                );
+            
+                
+
                 $("input.form-control").keyup(function () {
                     var parent = $(this).parent();
                     var lbl = parent.children("label").attr("for", $(this).attr("id"));

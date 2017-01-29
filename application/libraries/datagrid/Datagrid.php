@@ -139,9 +139,9 @@ class Datagrid {
         if ("" != $this->_CFG->get_WHR_TBL()) {
             array_push($out, $this->_CFG->get_WHR_TBL());
         }
-
-        $column = $this->_CFG->get_column();
-
+        
+        $columns = $this->_CFG->get_column();
+        
         $i = 0;
 
         if ($fields != "") {
@@ -152,9 +152,7 @@ class Datagrid {
                     continue;
                 }
 
-
-
-                $cfg = _get_raw_item($column, $field);
+                $cfg = _get_raw_item($columns, $field);
                 $value = trim(_get_raw_item($values, $i));
                 $operan = trim(_get_raw_item($operans, $i));
                 $formId = $cfg->get_FORM_ID();
@@ -210,7 +208,7 @@ class Datagrid {
         return $out;
     }
 
-    private function get_query_string($param = "") {
+    function get_query_string($param = "") {
         $out = "";
         if (is_array($_GET)) {
             if ("" == $param) {
@@ -343,7 +341,7 @@ class Datagrid {
 
         $rs = $this->_MODEL->list_data($fld, $this->_CFG->get_PRIMARY_TBL(), $this->_CFG->get_JOIN_TBL(), $whr, $this->_CFG->get_ORDER_TBL(), $itemPerPage, $offset);
         $this->CI->session->set_userdata(array(md5("lastQuery" . $this->CI->router->directory . $this->CI->router->class) => $this->_MODEL->_getLastQuery()));
-
+        
 
 
         if (!$this->_DISABLE_SEARCH) {
@@ -1248,7 +1246,7 @@ class Datagrid {
                         );
                     }
                 });
-            })';
+            });';
 
             $this->set_ADDITIONAL_SCRIPT($addscript);
         }
