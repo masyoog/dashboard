@@ -123,6 +123,11 @@ class Produk extends MY_Controller {
         $grupUser = new Datagridcolumn();
         $this->_CFG->add_column("Product Type", $grupUser);
 
+        if ( $key != "" ){
+            $userName = new Datagridcolumn();
+            $this->_CFG->add_column("Code", $userName);
+        }
+        
         $rsGrup = $this->base_model->list_data("id as kunci, provider_name as nilai", "provider", "", array('status' => 1), array("provider_name asc"));
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.provider_id");
