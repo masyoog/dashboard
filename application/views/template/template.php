@@ -11,11 +11,12 @@
         <link href="<?php echo base_url('assets') ?>/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
         <link href="<?php echo base_url('assets') ?>/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <!-- daterange picker -->
-        <link href="<?php echo base_url('assets') ?>/css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+        
         <!-- date picker -->
         <link href="<?php echo base_url('assets') ?>/css/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
 
+        <!-- daterange picker -->
+        <link href="<?php echo base_url('assets') ?>/css/daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="<?php echo base_url('assets') ?>/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
 
@@ -205,6 +206,7 @@
 
         <!-- Bootstrap -->
         <script src="<?php echo base_url('assets') ?>/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="<?php echo base_url('assets') ?>/js/plugins/daterangepicker/moment.min.js" type="text/javascript"></script>
 
         <!-- date-range-picker -->
         <script src="<?php echo base_url('assets') ?>/js/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
@@ -365,9 +367,8 @@
                 });
 
                 function setDateRangeValue(start, end, label) {
-                    var startDate = moment(start);
-                    var endDate = moment(end);
-                    console.log("lala");
+                    var startDate = moment(start, "MM/DD/YYYY");
+                    var endDate = moment(end, "MM/DD/YYYY");                   
                     $('.elm-date-range').val(startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY'));
                 }
                 $('.elm-date-range').daterangepicker(
@@ -375,7 +376,7 @@
                     locale: {
                         format: 'DD/MM/YYYY'
                     },
-                    "showDropdowns": true,
+                    showDropdowns: true
                 },setDateRangeValue
                 );
             
