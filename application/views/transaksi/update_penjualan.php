@@ -98,7 +98,7 @@ $form_input_attr = array('class' => 'form-control',);
                     <div class="form-group form-group-sm">
                         <div class="checkbox">
                             <label class="control-label" for="close_po">
-                                <input type="checkbox" name="close_po" id="close_po" value="2" <?php echo ($rs_po->status == "2" ? "checked" : ""); ?>>
+                                <input type="checkbox" name="close_po" id="close_po" value="2" <?php echo ($rs_po->status == "2" ? "checked disabled=\"disabled\"" : ""); ?>>
                                 PAID
                             </label>
                         </div>                          
