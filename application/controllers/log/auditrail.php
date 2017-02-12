@@ -67,6 +67,14 @@ class Auditrail extends MY_Controller {
         $this->_CFG->add_column("Reff Key", $menu);
         
         
+        $this->_CFG->add_COMMAND_BUTTON(
+                    "KOSONGKAN LOG", array(
+                "method" => "/remove",
+                "style" => "fa-trash",
+                "class" => "btn-danger",
+                "option" => 'data-bb="prompt" data-msg="Anda akan menghapus data ini ?" data-confirm="true"',
+                "authType" => "hapus"
+            ));
         
         //disable tambah
         $this->_CFG->add_COMMAND_BUTTON("TAMBAH", array());
@@ -103,18 +111,14 @@ class Auditrail extends MY_Controller {
     }
     
     
-    function remove($key=""){
+    function remove(){
         $this->load->model($this->_CFG->get_DBMODEL());
         $model = _get_raw_object($this, $this->_CFG->get_DBMODEL());
         
-        $this->_TBL_PRIMARY =  _replace_after($this->_TBL_PRIMARY, " ");
-        $this->_TBL_PRIMARY_PK = _replace_before($this->_TBL_PRIMARY_PK, ".");
         
-        if ( "" != $key ) {
-            $whr = array ($this->_TBL_PRIMARY_PK => $key); 
-            $affected = $model->delete_data($this->_TBL_PRIMARY, $whr);
-            $this->auditrail("Remove", $key);
-        }
+        $model->execute("TRUNCATE TABLE sys_log ", FALSE);
+        
+        $this->auditrail("Empty");
         
         redirect(base_url($this->_INDEX_PAGE) . _build_query_string($this->_get_query_string()));
     }
