@@ -315,7 +315,7 @@ class Detil_penjualan extends MY_Controller {
             $ID = $this->base_model->insert_data($this->_TBL_PRIMARY, $datas);
             if ($ID > 0) {
                 $this->auditrail("Add", $ID);
-                $this->_updateStock($ID);                
+//                $this->_updateStock($ID);                
             }
         }
 
@@ -369,7 +369,7 @@ class Detil_penjualan extends MY_Controller {
             $whr = array($this->_TBL_PRIMARY_PK => $key);
             
             //refund stock first 
-            $this->_updateStock($key, "refunded");
+//            $this->_updateStock($key, "refunded");
             $affected = $this->base_model->delete_data($this->_TBL_PRIMARY, $whr);
             if ($affected > 0) {
                 $this->auditrail("remove", $key);
