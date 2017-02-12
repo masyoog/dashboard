@@ -143,21 +143,31 @@ class Datagrid {
         $columns = $this->_CFG->get_column();
         
         $i = 0;
-
+        
         if ($fields != "") {
             $cfg = "";
             $outTemp = "";
             foreach ($fields as $field) {
+                
                 if ($field == "") {
+                    $i++;	
                     continue;
                 }
 
                 $cfg = _get_raw_item($columns, $field);
+                $formId = $cfg->get_FORM_ID();
+                
+                if (_get_raw_item($enabledDefaultSearch, $formId) == "0") {
+                    $i++;
+                    continue;
+                }
+                
                 $value = trim(_get_raw_item($values, $i));
                 $operan = trim(_get_raw_item($operans, $i));
-                $formId = $cfg->get_FORM_ID();
-
-                if ($field == "" || $value == "" || $operan == "" || _get_raw_item($enabledDefaultSearch, $formId) == "0") {
+                
+                 
+                if ($field == "" || $value == "" || $operan == "" ) {
+                    $i++;
                     continue;
                 }
 
@@ -204,7 +214,7 @@ class Datagrid {
                 $i++;
             }
         }
-
+        
         return $out;
     }
 
