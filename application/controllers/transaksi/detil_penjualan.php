@@ -51,24 +51,20 @@ class Detil_penjualan extends MY_Controller {
         $nama->set_REQUIRED(TRUE);
         $this->_CFG->add_column("Supplier", $nama);
 
-        $grupUser = new Datagridcolumn();
-        $grupUser->set_FIELD_DB("a.description");
-        $grupUser->set_SIZE(128);
-        $grupUser->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $grupUser);
-
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.pprice");
         $userName->set_SIZE(4);
         $userName->set_FORM_ID("pprice");
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
+        $userName->set_EDITABLE(FALSE);
         $this->_CFG->add_column("Pprice", $userName);
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.price");
         $userName->set_SIZE(4);
         $userName->set_FORM_ID("price");
+        $userName->set_EDITABLE(FALSE);
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
         $this->_CFG->add_column("Price", $userName);
@@ -87,6 +83,21 @@ class Detil_penjualan extends MY_Controller {
         $nama->set_FORM_ID("unit");
         $nama->set_REQUIRED(TRUE);
         $this->_CFG->add_column("Unit", $nama);
+        
+        $userName = new Datagridcolumn();
+        $userName->set_FIELD_DB("a.amount");
+        $userName->set_SIZE(4);
+        $userName->set_FORM_ID("amount");
+        $userName->set_EDITABLE(FALSE);
+        $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
+        $userName->set_REQUIRED(TRUE);
+        $this->_CFG->add_column("Amount", $userName);
+        
+        $grupUser = new Datagridcolumn();
+        $grupUser->set_FIELD_DB("a.description");
+        $grupUser->set_SIZE(128);
+        $grupUser->set_FORM_ID("description");
+        $this->_CFG->add_column("Description", $grupUser);
 
         $this->_CFG->add_grid_button("UBAH", array());
     }
@@ -122,8 +133,6 @@ class Detil_penjualan extends MY_Controller {
         $id_supplier = $this->session->userdata(md5(__FILE__ . "order_id"));
 
         $dg = new Datagrid();
-//        $grupUser = new Datagridcolumn();
-//        $this->_CFG->add_column("Supplier", $grupUser);
 
         if ($key == "") {
             $rsGrup = $this->base_model->list_data("id as kunci, concat_ws(' - ', code, name) as nilai", "product", "", array('status' => 1), array("name asc"), "", "", "", FALSE);
@@ -136,21 +145,22 @@ class Detil_penjualan extends MY_Controller {
             $grupUser->set_FORM_ID("product_id");
             $this->_CFG->add_column("Product", $grupUser);
             
-            $rsSup = $this->base_model->list_data("id as kunci, concat_ws(' - ', supplier_code, supplier_name) as nilai", "supplier", "", array('status' => 1), array("supplier_name asc"), "", "", "", FALSE);
+//            $rsSup = $this->base_model->list_data("id as kunci, concat_ws(' - ', supplier_code, supplier_name) as nilai", "supplier", "", array('status' => 1), array("supplier_name asc"), "", "", "", FALSE);
+            $rsSup = array();
             $grupUser = new Datagridcolumn();
             $grupUser->set_FIELD_DB("a.supplier_id");
             $grupUser->set_FIELD_TYPE($grupUser->get_ENUM_TYPE());
-            $grupUser->set_ENUM_DEFAULT_VALUE($rsSup);
+//            $grupUser->set_ENUM_DEFAULT_VALUE();
             $grupUser->set_SIZE(4);
             $grupUser->set_REQUIRED(TRUE);
             $grupUser->set_FORM_ID("supplier_id");
             $this->_CFG->add_column("Supplier", $grupUser);
             
-            $rsUnit = $this->base_model->list_data("id as kunci, unit_name as nilai", "units", "", array('status' => 1), array("unit_name asc"), "", "", "", FALSE);
+//            $rsUnit = $this->base_model->list_data("id as kunci, unit_name as nilai", "units", "", array('status' => 1), array("unit_name asc"), "", "", "", FALSE);
             $grupUser = new Datagridcolumn();
             $grupUser->set_FIELD_DB("a.unit");
             $grupUser->set_FIELD_TYPE($grupUser->get_ENUM_TYPE());
-            $grupUser->set_ENUM_DEFAULT_VALUE($rsUnit);
+//            $grupUser->set_ENUM_DEFAULT_VALUE();
             $grupUser->set_SIZE(4);
             $grupUser->set_REQUIRED(TRUE);
             $grupUser->set_FORM_ID("unit");
@@ -209,7 +219,71 @@ class Detil_penjualan extends MY_Controller {
         //initiate datagrid
         $data["pages"] = $dg->render_form($mode, $key, $errorMsg, TRUE);
         $data["isWindowPopUp"] = TRUE;
+        
+        $script = '$("#product_id").change(function(){'
+                . '     var productId = $(this).val();'
+                . '     $.ajax({
+                            url: "'. base_url("transaksi/detil_penjualan/products") .'/" + productId,
+                            beforeSend: function( xhr ) {
+                              $("#loading_img").show();
+                            },
+                            success : function(response){
+                                console.log(response);
+                                var data = $.parseJSON(response);
+                                $("#price").val(data.product.price);
+                                var sup = data.suppliers;
+                                var unit = data.units;
+                                parseToSelect(sup, $("#supplier_id"));
+                                parseToSelect(unit, $("#unit"));
+                                getPPrice();
+                                $("#loading_img").hide();
+                                
+                            },
+                            error : function(){
+                                $("#loading_img").hide();
+                            }
+                        });'
+                . '});'
+                . '$("#supplier_id").change(function(){'
+                . '     getPPrice();'
+                . '});'
+                . 'function parseToSelect(data, elm){'                
+                . '     elm.empty();'
+                . '     if ( data.length > 0){'
+                . '         $.each(data, function(i, item){'
+                . '             elm.append("<option value=\""+ item.kunci +"\">"+ item.nilai +"</option>");'
+                . '         })'
+                . '     }'
+                . '}'
+                . 'function getPPrice(){'
+                . '     var productId = $("#product_id").val();'
+                . '     var supplierId = $("#supplier_id").val();'
+                . '     $.ajax({
+                            url: "'. base_url("transaksi/detil_penjualan/pprice") .'/" + productId + "/" + supplierId,
+                            beforeSend: function( xhr ) {
+                              
+                            },
+                            success : function(response){
+                                console.log(response);
+                                var data = $.parseJSON(response);
+                                $("#pprice").val(data.pprice);
+                            },
+                            error : function(){
+                                
+                            }
+                        });'
+                . '}'
+                . '$("#qty").change(function(){'
+                . '     setAmount();'
+                . '});'                
+                . 'function setAmount(){'
+                . '     var price=$("#price").val().replace(".", "");'
+                . '     var qty=$("#qty").val().replace(".", "");'
+                . '     var amount = price * qty;'
+                . '     $("#amount").val(amount);'
+                . '}';
       
+        $dg->set_ADDITIONAL_SCRIPT($script);
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
 
@@ -305,4 +379,24 @@ class Detil_penjualan extends MY_Controller {
         redirect(base_url($this->_INDEX_PAGE . "/index/" . $id_supplier . "/null/") . _build_query_string($this->_get_query_string()));
     }
 
+    
+    function products($productId=""){
+        $rsPrd = $this->base_model->list_single_data("*", "product", "", array("status"=>1, "id"=> intval($productId)));
+        $rsSup = $this->base_model->list_data("b.id as kunci, concat_ws(' - ', b.supplier_code, b.supplier_name ) as nilai", "parsing a", array("supplier b"=>"b.id=a.supplier_id"), array("a.product_id"=> intval($productId)));
+        
+        
+        $rsUnit = $this->base_model->list_data("id as kunci, unit_name as nilai", "units", "", array("id"=>intval($rsPrd->unit_id)));
+        $data["product"] = $rsPrd;
+        $data["units"] = $rsUnit;
+        $data["suppliers"] = $rsSup;
+        
+        echo json_encode($data);        
+    }
+    
+    function pprice($productId="", $supplier_id){
+        
+        $rsSup = $this->base_model->list_single_data("pprice", "parsing", "", array("product_id"=> intval($productId), "supplier_id"=> intval($productId)));
+        
+        echo json_encode(array("pprice"=>intval($rsSup->pprice)));        
+    }
 }
