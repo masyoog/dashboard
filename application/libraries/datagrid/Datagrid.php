@@ -1284,7 +1284,8 @@ class Datagrid {
                     "TAMBAH", array(
                 "method" => "/form/add",
                 "style" => "fa-plus",
-                "class" => "btn-primary"
+                "class" => "btn-primary",
+                "authType"=>"tambah"        
             ));
         }
 
@@ -1293,7 +1294,8 @@ class Datagrid {
                     "EXPORT", array(
                 "method" => "/export/" . $this->_CFG->get_DBMODEL(),
                 "style" => "fa-download",
-                "class" => "btn-warning"
+                "class" => "btn-warning",
+                "authType"=>"cetak"          
             ));
         }
 
@@ -1301,25 +1303,29 @@ class Datagrid {
                 array("EXPORT" . $this->CI->router->directory . $this->CI->router->class => $this->authorize("cetak"))
         );
 
-        if (!$this->authorize("tambah")) {
-            $this->_CFG->add_COMMAND_BUTTON(
-                    "TAMBAH", array());
-        }
-
-
-        if (!$this->authorize("cetak")) {
-            $this->_CFG->add_COMMAND_BUTTON(
-                    "EXPORT", array());
-        }
+//        if (!$this->authorize("tambah")) {
+//            $this->_CFG->add_COMMAND_BUTTON(
+//                    "TAMBAH", array());
+//        }
+//
+//
+//        if (!$this->authorize("cetak")) {
+//            $this->_CFG->add_COMMAND_BUTTON(
+//                    "EXPORT", array());
+//        }
 
         $buttons = $this->_CFG->get_COMMAND_BUTTON();
 
         $url = _replace_after(site_url($this->CI->router->fetch_directory() . $this->CI->router->fetch_class()), "/index");
 
         foreach ($buttons as $btn => $property) {
+            if (!$this->authorize(_get_raw_item($property, "authType"))) {
+                continue;
+            }
             $action = _get_raw_item($property, "action");
             $method = _get_raw_item($property, "method");
             $overide = _get_raw_item($property, "overideUri");
+            $option = _get_raw_item($property, "option");
             $keys = "";
             if ("" != $method) {
                 if ($action != "") {
@@ -1332,7 +1338,7 @@ class Datagrid {
                     }
 
                     $out .= '<div class="form-group pull-right">'
-                            . '<a class="btn ' . _get_raw_item($property, "class") . ' btn-sm pull-right text-white" href="#" onclick="javascript:' . $action . '" role="button"><span class="fa ' . _get_raw_item($property, "style") . '"></span>&nbsp;' . $btn . '</a>'
+                            . '<a ' . $option . ' class="btn ' . _get_raw_item($property, "class") . ' btn-sm pull-right text-white" href="#" onclick="javascript:' . $action . '" role="button"><span class="fa ' . _get_raw_item($property, "style") . '"></span>&nbsp;' . $btn . '</a>'
                             . '</div>';
                 } else {
                     if ($overide) {
@@ -1342,7 +1348,7 @@ class Datagrid {
                     }
 
                     $out .= '<div class="form-group pull-right">'
-                            . '<a class="btn ' . _get_raw_item($property, "class") . ' btn-sm pull-right text-white" href="' . $url . _get_raw_item($property, "method") . _build_query_string($this->get_query_string()) . '" role="button"><span class="fa ' . _get_raw_item($property, "style") . '"></span>&nbsp;' . $btn . '</a>'
+                            . '<a ' . $option . ' class="btn ' . _get_raw_item($property, "class") . '  btn-sm pull-right text-white" href="' . $url . _get_raw_item($property, "method") . _build_query_string($this->get_query_string()) . '" role="button"><span class="fa ' . _get_raw_item($property, "style") . '"></span>&nbsp;' . $btn . '</a>'
                             . '</div>';
                 }
             }
