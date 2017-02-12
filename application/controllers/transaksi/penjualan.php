@@ -75,7 +75,7 @@ class Penjualan extends MY_Controller {
 
         $this->_CFG->add_grid_button(
                 "Update Status", array(
-            "method" => base_url("transaksi/update_pembelian/form/edit"),
+            "method" => base_url("transaksi/update_penjualan/form/edit"),
             "overideUri" => TRUE,
             "style" => "fa-check",
             "action" => "openBox('URL', '90')",
