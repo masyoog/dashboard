@@ -31,18 +31,21 @@ class Update_penjualan extends MY_Controller {
             $close_po = $this->input->post("close_po");
             $pay = $this->input->post("pay");
 
-            $rsPODetail = $this->base_model->list_data(
-                    "id", "order_detail", "", array("order_id" => intval($key))
-            );
+
             //update item PO
-            if ($rsPODetail != "") {
-                foreach ($rsPODetail as $row) {
-                    $this->_updateStock($row->id);                    
+            if ($close_po == "2") {
+                $rsPODetail = $this->base_model->list_data(
+                        "id", "order_detail", "", array("order_id" => intval($key))
+                );
+                if ($rsPODetail != "") {
+                    foreach ($rsPODetail as $row) {
+                        $this->_updateStock($row->id);
+                    }
                 }
             }
 
             //update Status PO
-            $updatePo = $this->base_model->update_data("orders", array("disc"=>$disc, "netto"=>$pay, "status" => $close_po), array("id" => $key));
+            $updatePo = $this->base_model->update_data("orders", array("disc" => $disc, "netto" => $pay, "status" => $close_po), array("id" => $key));
             if ($updatePo > 0) {
                 $this->auditrail("Update Order", $updatePo);
             }
@@ -78,7 +81,7 @@ class Update_penjualan extends MY_Controller {
         $this->template->load($data, "transaksi/update_penjualan");
     }
 
-    private function _updateStock($orderDetailId = "", $refunded="") {
+    private function _updateStock($orderDetailId = "", $refunded = "") {
         // get data po detail
         $rsOrderDetails = $this->base_model->list_single_data("*", "order_detail", "", array("id" => intval($orderDetailId)));
 
@@ -99,16 +102,16 @@ class Update_penjualan extends MY_Controller {
 
             //insert stock mutasi
             $data = array(
-                "stocks_id"=>intval($stocksId),
+                "stocks_id" => intval($stocksId),
                 "description" => $rsOrder->order_code
             );
-            
-            if ( $refunded != ""){
+
+            if ($refunded != "") {
                 $data = $data + array("added" => intval($rsOrderDetails->qty));
             } else {
                 $data = $data + array("reduced" => intval($rsOrderDetails->qty));
             }
-            
+
             $stockMutasiId = $this->base_model->insert_data("stocks_mutasi", $data);
             if ($stockMutasiId > 0) {
                 $this->auditrail("Add Stock Mutasi", $stockMutasiId);
