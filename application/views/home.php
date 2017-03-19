@@ -50,8 +50,8 @@
 
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>
-                        <sup style="font-size: 20px">Rp</sup>&nbsp;<?php echo $revPaidOrder; ?>
+                    <h3 >
+                        <sup style="font-size: 20px">Rp</sup>&nbsp;<?php echo _number($revPaidOrder); ?>
                     </h3>
                     <p>
                         Order Revenue
@@ -70,7 +70,7 @@
             <div class="small-box bg-red">
                 <div class="inner">
                     <h3>
-                        <sup style="font-size: 20px">Rp</sup>&nbsp;<?php echo $otherIncome; ?>
+                        <sup style="font-size: 20px">Rp</sup>&nbsp;<?php echo _number($otherIncome); ?>
                     </h3>
                     <p>
                         Other Income
