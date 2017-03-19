@@ -104,7 +104,7 @@ class Datagrid {
         $id_menu = $this->_current_url();
         $accessTemp = $this->CI->session->userdata(USER_AUTH . "child_menu");
         $access = json_decode(json_encode($accessTemp), TRUE);
-
+        
         $access = $access == "" ? array() : $access;
 
         $key = array_search($id_menu, array_column($access, 'uri'));
@@ -112,9 +112,10 @@ class Datagrid {
         if ($key === FALSE) {
             $accessTemp = $this->CI->session->userdata(USER_AUTH . "main_menu");
             $access = json_decode(json_encode($accessTemp), TRUE);
+            
             $access = $access == "" ? array() : $access;
             $key = array_search($id_menu, array_column($access, 'uri'));
-
+            
             if ($key === FALSE) {
                 $id_menu = _replace_after($id_menu, "/");
                 $key = array_search($id_menu, array_column($access, 'uri'));
@@ -124,6 +125,8 @@ class Datagrid {
         if ($key !== FALSE) {
             $access = _get_raw_item($accessTemp, $key);
         }
+        
+        
         return $access;
     }
 
@@ -311,6 +314,7 @@ class Datagrid {
         $out = $this->get_header();
         $out .= '<!-- Main content -->';
         $out .= '<section class="content">';
+        
         if (!$this->authorize()) {
 
             $out .= '<section class="content" >';
