@@ -64,6 +64,19 @@ class Customer extends MY_Controller {
         $this->_CFG->add_column("Status", $status);
     }
 
+    function getall($q=""){
+        
+        if ( $q != ""){
+            $whr = ["CONCAT_WS('-', `name`, `hp` )  like"=>"%".$q."%" ];
+        } else {
+            $whr = [];
+        } 
+        
+        $rs = $this->base_model->list_data("CONCAT_WS(' - ',name,hp ) AS nilai, id as kunci", "customers", "", $whr, array("nilai"), "10");
+        
+        echo json_encode($rs);
+    }
+    
     function index() {
         $data = array();
 
