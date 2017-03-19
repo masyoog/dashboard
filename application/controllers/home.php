@@ -57,7 +57,7 @@ class Home extends MY_Controller {
             //Other Income
             $whrOtherIncome = array("create_at" => date("Y-m-d"));
             $otherIncome = $this->base_model->list_single_data("sum(amount) as revenue", "income_others", "", $whrOtherIncome);
-            $data["otherIncome"] = intval($paidOrder->revenue);
+            $data["otherIncome"] = intval($otherIncome->revenue);
 
 
             $rsNewOrder = $this->base_model->list_data("a.*, b.nama", "orders a", array("sys_user b" => "b.id=a.create_by"), $whrNewOrder);
