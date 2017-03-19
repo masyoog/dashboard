@@ -53,7 +53,7 @@ class Detil_penjualan extends MY_Controller {
 
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.pprice");
-        $userName->set_SIZE(4);
+        $userName->set_SIZE(10);
         $userName->set_FORM_ID("pprice");
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
@@ -62,7 +62,7 @@ class Detil_penjualan extends MY_Controller {
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.price");
-        $userName->set_SIZE(4);
+        $userName->set_SIZE(10);
         $userName->set_FORM_ID("price");
         $userName->set_EDITABLE(FALSE);
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
@@ -86,7 +86,7 @@ class Detil_penjualan extends MY_Controller {
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.amount");
-        $userName->set_SIZE(4);
+        $userName->set_SIZE(10);
         $userName->set_FORM_ID("amount");
         $userName->set_EDITABLE(FALSE);
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
