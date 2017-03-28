@@ -236,19 +236,17 @@
                 if (pc < 1) {
                     pc = 80;
                 }
+                
                 var w = window.innerWidth;
                 var h = window.innerHeight;
-//                console.log('width ' + w);
-//                console.log('height ' + h);
                 w = parseInt(w * pc / 100);
                 h = parseInt(h * pc / 100);
-//                console.log('width ' + w);
-//                console.log('height ' + h);
                 withReload = null == withReload ? false : true;
                 if (withReload) {
-                    tiny.box.show({iframe: url, width: w, height: h, closejs: function () {
-                            parent.location.reload()
-                        }});
+                    var parentWindow = window;
+                    tiny.box.show({iframe: url, width: w, height: h, closejs: function () {                            
+                            parentWindow.location.reload();
+                    }});
                 } else {
                     tiny.box.show({iframe: url, width: w, height: h, close: true});
                 }
