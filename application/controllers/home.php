@@ -66,10 +66,22 @@ class Home extends MY_Controller {
             $data["additional_script2"] = "var dt = $('#example1').DataTable();"
                     . "$('#example1 tbody').on('click', 'tr', function () {                        
                         var dataId = $(this).data('id');
-                        return openBox('".base_url("transaksi/update_penjualan/form/edit")."/' + dataId, '90');
+                        return openBox('".base_url("transaksi/update_penjualan/form/edit")."/' + dataId, '90', true);
                     } );";
 
-
+            $data["additional_script2"] .= "$('#addPODashboard').click(function(){
+                $.ajax({
+                    url: '". base_url("transaksi/penjualan/add_new_order_from_dashboard") ."',
+                    success: function(resp){                        
+                        var data = $.parseJSON(resp);  
+                        alert('New Order Created');
+                        return openBox('".base_url("transaksi/update_penjualan/form/edit")."/' + data.id, '90', true);
+                    },
+                    error : function(){
+                        alert('fail to create new order!!!');
+                    },
+                });
+            });";
             $this->template->load($data, 'home');
         }
     }
