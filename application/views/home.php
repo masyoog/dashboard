@@ -86,13 +86,13 @@
         </div> 
     </div>
 
-    <h3 class="box-title">New Orders List</h3>
+    <h3 class="box-title">New Orders List 
+        <button  type="button" class="btn btn-danger" name="add_po" id ="addPODashboard" value="Tambah Order" >ADD New Order</button>
+    </h3>
     <div class="row">
         <div class="col-md-12">
             <div class="box">
-                <div class="box-header">
-
-                </div>
+                <div class="box-header"></div>
                 <div class="box-body">
                     <div id="example1_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
 
@@ -124,12 +124,6 @@
                                             endforeach;
                                         endif;
                                         ?>
-<!--                                        <tr role="row" class="even">
-                                            <td class="sorting_1">Gecko</td>
-                                            <td>Firefox 1.5</td>
-                                            <td>Win 98+ / OSX.2+</td>
-                                            <td>1.8</td>
-                                            <td>A</td>-->
                                     </tbody>
                                 </table>
                             </div>
