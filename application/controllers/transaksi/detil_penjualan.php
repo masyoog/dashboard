@@ -102,10 +102,14 @@ class Detil_penjualan extends MY_Controller {
         $this->_CFG->add_grid_button("UBAH", array());
     }
 
-    function index($orderId = "null") {
+    function index($orderId = "null", $byPassAdd=false) {
         $data = array();
         $whr = array();
         $this->session->set_userdata(array(md5(__FILE__ . "order_id") => $orderId));
+        $this->session->set_userdata(array(md5(__FILE__ . "byPassAdd") => $byPassAdd));
+        if ( $byPassAdd ){
+            redirect(base_url("transaksi/detil_penjualan/form/add"));
+        }
 
         if ($orderId != "null") {
             $whr = $whr + array("a.order_id" => intval($orderId));
@@ -131,7 +135,7 @@ class Detil_penjualan extends MY_Controller {
     function form($mode, $key = "") {
         $data = array();
         $id_supplier = $this->session->userdata(md5(__FILE__ . "order_id"));
-
+        $isByPass = $this->session->userdata(md5(__FILE__ . "byPassAdd"));
         $dg = new Datagrid();
 
         if ($key == "") {
@@ -283,6 +287,13 @@ class Detil_penjualan extends MY_Controller {
                 . '     $("#amount").val(amount);'
                 . '}';
       
+//        if ( $isByPass ){
+//            $script .= "$('.tclose').click(function(e){"
+//                    . "console.log($(this));"
+//                    . "console.log(window.parent);"
+//                    . "e.preventDefault();"                    
+//                    . "});";
+//        }
         $dg->set_ADDITIONAL_SCRIPT($script);
         $data["additional_script"] = $dg->get_ADDITIONAL_SCRIPT();
 
