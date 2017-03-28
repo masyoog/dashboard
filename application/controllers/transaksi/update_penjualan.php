@@ -30,7 +30,7 @@ class Update_penjualan extends MY_Controller {
             $disc = $this->input->post("disc");
             $close_po = $this->input->post("close_po");
             $pay = $this->input->post("pay");
-
+            $remark = $this->input->post("remark");
 
             //update item PO
             if ($close_po == "2") {
@@ -45,7 +45,14 @@ class Update_penjualan extends MY_Controller {
             }
 
             //update Status PO
-            $updatePo = $this->base_model->update_data("orders", array("disc" => $disc, "netto" => $pay, "status" => $close_po), array("id" => $key));
+            $updatePo = $this->base_model->update_data(
+                    "orders", 
+                    array(
+                        "disc" => $disc, 
+                        "netto" => $pay,
+                        "remark" => $remark,
+                        "status" => $close_po), 
+                    array("id" => $key));
             if ($updatePo > 0) {
                 $this->auditrail("Update Order", $updatePo);
             }
@@ -66,8 +73,14 @@ class Update_penjualan extends MY_Controller {
         $data["isWindowPopUp"] = TRUE;
 
         $addScript .= 'function hitungPo(){'
-                . '     var total = $("#total_payment").val().replace(".","");'
-                . '     var disc = $("#disc").val().replace(".","");'
+                . '     var total = $("#total_payment").val();'
+                . '     if (total){'
+                . '         total = total.replace(".","");'
+                . '     }'
+                . '     var disc = $("#disc").val();'
+                . '     if ( disc ){'
+                . '         disc = disc.replace(".","");'
+                . '     }'
                 . '     var pay = total - disc;'
                 . '     $("#pay").val(pay);'
                 . '}'
