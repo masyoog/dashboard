@@ -38,11 +38,24 @@ $form_input_attr = array('class' => 'form-control',);
                         <?php
                         echo my_input_elm("order_date", _date($rs_po->create_at, "d/m/Y"), array("readonly" => "readonly", "required" => "required"));
                         ?>                            
-                    </div>    
+                    </div>
+                    
+                    <div class="form-group form-group-sm">
+                        <label class="control-label" for="remark">Customer Name
+                            <span class="fa fa-asterisk text-info"></span>                                
+                        </label>
+                        <?php
+                        echo my_input_elm("remark", $rs_po->remark, array("required" => "required"));
+                        ?>                            
+                    </div>
+
                     <div class="form-group form-group-sm">
                         <br>
-                        <h4>Detail Order</h4>
-                        <p>
+                        <h4>Detail Order&nbsp;&nbsp;
+                            <button  type="button" class="btn btn-primary" name="add_item" value="Tambah Item Order" 
+                                     onclick="openBox('<?php echo base_url("transaksi/detil_penjualan/index")."/".$rs_po->id."/true"?>', '80', true)">ADD new item</button></h4>
+                        
+                        <p>                         
                         - Ketika data anda simpan dengan status <b>PAID</b> tercentang, maka sistem akan otomatis mengurangi stock berdasarkan Produk dengan nilai dari <b>Qty.</b><br>                            
                         </p>
                         <?php
@@ -108,7 +121,7 @@ $form_input_attr = array('class' => 'form-control',);
                 <div class="box-footer">
                     <div style="text-align: right;">
                     <?php //if($rs_po->status != "2"):?>
-                        <button  type="button" class="btn btn-danger cancelFormBtn" name="cancel" value="BATAL" onclick="closeBox()">BATAL</button>
+                        <button  type="button" class="btn btn-danger cancelFormBtn" name="cancel" value="BATAL" onclick="closeBox(true)">BATAL</button>
                         <button  type="submit" class="btn btn-primary submitFormBtn" name="save" value="SIMPAN" >SIMPAN</button>
                     <?php //endif;?>
                     </div>
