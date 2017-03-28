@@ -114,9 +114,34 @@ class Penjualan extends MY_Controller {
         $this->template->load($data);
     }
 
+    function add_new_order_from_dashboard(){
+        $this->load->library("DocNumber");
+        
+        $columns = $this->_CFG->get_column();
+
+        $this->_TBL_PRIMARY = _replace_after($this->_TBL_PRIMARY, " ");
+
+        $orderNumber = $this->docnumber->generate("FORMAT", "ORDER", "orders.order_code");
+
+        $datas = array(
+            "order_code" => $orderNumber,
+            "status" => 1,
+            "order_date" => date("Y-m-d"),
+            "create_at" => date("Y-m-d H:i:s"),
+            "create_by" => $this->session->userdata(USER_AUTH . "cUserID")
+        );
+        
+        $ID = $this->base_model->insert_data($this->_TBL_PRIMARY, $datas);
+        if ($ID > 0) {
+            $this->auditrail("Add", $ID);
+            echo json_encode(array("id"=>$ID));
+        } else {
+            echo json_encode(array("id"=>null));
+        }       
+    }
+    
     function form($mode, $key = "") {
         $data = array();
-
 
         $dg = new Datagrid();
 
