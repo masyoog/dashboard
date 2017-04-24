@@ -32,7 +32,7 @@ $form_input_attr = array('class' => 'form-control',);
                         ?>                            
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="control-label" for="supplier_name">Supplier Name
+                        <label class="control-label" for="supplier_name">Nama Supplier
                             <span class="fa fa-asterisk text-info"></span>                                
                         </label>
                         <?php
@@ -40,7 +40,7 @@ $form_input_attr = array('class' => 'form-control',);
                         ?>                            
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="control-label" for="po_date">PO Date
+                        <label class="control-label" for="po_date">Tanggal PO
                             <span class="fa fa-asterisk text-info"></span>                                
                         </label>
                         <?php
@@ -60,14 +60,14 @@ $form_input_attr = array('class' => 'form-control',);
                             <table class="table table-hover nowrap dataTable">
                                 <tr>
                                     <th>No.</td>
-                                    <th>Product Name</td>
-                                    <th>Item Price</td>
-                                    <th>Qty Ordered</td>
-                                    <th>Total Price</td>
-                                    <th>Qty Approved</td>
+                                    <th>Nama Product</td>
+                                    <th>Harga per Item</td>
+                                    <th>Jumlah Order</td>
+                                    <th>Total Harga</td>
+                                    <th>Jumlah Disetujui</td>
                                     <!--<th>Qty Returned</td>-->
                                     <!--<th>Qty Reject</td>-->
-                                    <th>Total Price Approved</td>    
+                                    <th>Total Harga Disetujui</td>    
                                 </tr>
                                 <?php
                                 foreach ($rs_po_detail as $row) {
@@ -86,7 +86,7 @@ $form_input_attr = array('class' => 'form-control',);
                                     </tr>
     <?php } ?>
                                 <tr>
-                                    <td colspan="6" align="right"><b>Total Payment</b></td>
+                                    <td colspan="6" align="right"><b>Total Pembayaran</b></td>
                                     <td><?php echo my_input_elm("total_payment", 0, array("required" => "required", "class" => "elm-num", "readonly" => "readonly", "style" => "text-align:right;")); ?></td>
                                 </tr>
                             </table>

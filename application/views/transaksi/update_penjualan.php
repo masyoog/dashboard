@@ -32,7 +32,7 @@ $form_input_attr = array('class' => 'form-control',);
                         ?>                            
                     </div>
                     <div class="form-group form-group-sm">
-                        <label class="control-label" for="order_date">Order Date
+                        <label class="control-label" for="order_date">Tanggal Order
                             <span class="fa fa-asterisk text-info"></span>                                
                         </label>
                         <?php
@@ -41,7 +41,7 @@ $form_input_attr = array('class' => 'form-control',);
                     </div>
                     
                     <div class="form-group form-group-sm">
-                        <label class="control-label" for="remark">Customer Name
+                        <label class="control-label" for="remark">Nama Pembeli
                             <span class="fa fa-asterisk text-info"></span>                                
                         </label>
                         <?php
@@ -65,10 +65,10 @@ $form_input_attr = array('class' => 'form-control',);
                             <table class="table table-hover nowrap dataTable">
                                 <tr>
                                     <th>No.</td>
-                                    <th>Product Name</td>
-                                    <th>Item Price</td>
-                                    <th>Qty Ordered</td>
-                                    <th>Total Price</td>
+                                    <th>Nama Produk</td>
+                                    <th>Harga per Item</td>
+                                    <th>Jumlah Order</td>
+                                    <th>Total Harga</td>
                                     <!--<th>Qty Approved</td>-->
                                     <!--<th>Qty Returned</td>-->
                                     <!--<th>Qty Reject</td>-->
@@ -94,15 +94,15 @@ $form_input_attr = array('class' => 'form-control',);
                                     $totalPayment = $totalPayment + $row->amount;
                                 } ?>
                                 <tr>
-                                    <td colspan="4" align="right"><b>Total Payment</b></td>
+                                    <td colspan="4" align="right"><b>Total Harga</b></td>
                                     <td><?php echo my_input_elm("total_payment", _number($totalPayment), array("required" => "required", "class" => "elm-num", "readonly" => "readonly", "style" => "text-align:right;")); ?></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" align="right"><b>Discount</b></td>
+                                    <td colspan="4" align="right"><b>Diskon</b></td>
                                     <td><?php echo my_input_elm("disc", _number($rs_po->disc), array("required" => "required", "class" => "elm-num", "style" => "text-align:right;")); ?></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="4" align="right"><b>Pay Amount</b></td>
+                                    <td colspan="4" align="right"><b>Total Dibayar</b></td>
                                     <td><?php echo my_input_elm("pay", _number($rs_po->netto), array("required" => "required", "class" => "elm-num", "readonly" => "readonly", "style" => "text-align:right;")); ?></td>
                                 </tr>
                             </table>
