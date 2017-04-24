@@ -43,43 +43,43 @@ class Stocks_mutasi extends MY_Controller {
         $userName->set_SIZE(32);
         $userName->set_FORM_ID("products_name");
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Product", $userName);
+        $this->_CFG->add_column("Produk", $userName);
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("d.last_balance");
         $nama->set_FIELD_DB_ALIAS("last_balance");
         $nama->set_FORM_ID("last_balance");
-        $this->_CFG->add_column("Last Balance", $nama);
+        $this->_CFG->add_column("Stok Terakhir", $nama);
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("d.added");
         $grupUser->set_FORM_ID("added");        
-        $this->_CFG->add_column("Added", $grupUser);
+        $this->_CFG->add_column("Penambahan", $grupUser);
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("d.reduced");
         $nama->set_FORM_ID("reduced");
-        $this->_CFG->add_column("Reduced", $nama);
+        $this->_CFG->add_column("Pengurangan", $nama);
         
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("d.balance");
         $nama->set_FORM_ID("balance");
-        $this->_CFG->add_column("Current Balance", $nama);
+        $this->_CFG->add_column("Stok Saat Ini", $nama);
         
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("d.description");
         $nama->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $nama);
+        $this->_CFG->add_column("Deskripsi", $nama);
         
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("a.closing_date");
         $nama->set_FORM_ID("closing_date");
-        $this->_CFG->add_column("Closing Date", $nama);
+        $this->_CFG->add_column("Tanggal Closing", $nama);
         
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.nama");
         $nama->set_FORM_ID("user");
-        $this->_CFG->add_column("Closed By", $nama);
+        $this->_CFG->add_column("Closing Oleh", $nama);
 
         $this->_CFG->add_grid_button("UBAH", array());
         $this->_CFG->add_grid_button("HAPUS", array());

@@ -49,7 +49,7 @@ class Retur_penjualan extends MY_Controller {
         $nama->set_FIELD_DB_ALIAS("created_at");
         $nama->set_FIELD_TYPE($nama->get_DATE_TYPE());
         $nama->set_FORM_ID("create_at");
-        $this->_CFG->add_column("Created Date", $nama);
+        $this->_CFG->add_column("Tanggal Dibuat", $nama);
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("b.order_code");
@@ -57,14 +57,14 @@ class Retur_penjualan extends MY_Controller {
         $grupUser->set_SIZE(4);
         $grupUser->set_FORM_ID("order_code");
         $grupUser->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Order Code", $grupUser);
+        $this->_CFG->add_column("Kode Order", $grupUser);
 
 
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.nama");
         $nama->set_FORM_ID("create_by");
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat Oleh", $nama);
 
 //        $this->_CFG->add_grid_button(
 //                "Cetak PO", array(
@@ -128,7 +128,7 @@ class Retur_penjualan extends MY_Controller {
         $grupUser->set_SIZE(4);
         $grupUser->set_REQUIRED(TRUE);
         $grupUser->set_FORM_ID("order_id");
-        $this->_CFG->add_column("Order Code", $grupUser);
+        $this->_CFG->add_column("Kode Order", $grupUser);
 
         if ($key == "") {
             $userName = new Datagridcolumn();
@@ -136,10 +136,10 @@ class Retur_penjualan extends MY_Controller {
         }
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created Date", $nama);
+        $this->_CFG->add_column("Tanggal Dibuat", $nama);
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat Oleh", $nama);
 
 //        if ($mode == "add") {
         $status = new Datagridcolumn();

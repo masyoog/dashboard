@@ -42,7 +42,7 @@ class Detil_penjualan extends MY_Controller {
         $nama->set_FIELD_DB_ALIAS("product");
         $nama->set_FORM_ID("product");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Product", $nama);
+        $this->_CFG->add_column("Produk", $nama);
         
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("b.supplier_name");
@@ -58,7 +58,7 @@ class Detil_penjualan extends MY_Controller {
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
         $userName->set_EDITABLE(FALSE);
-        $this->_CFG->add_column("Pprice", $userName);
+        $this->_CFG->add_column("HPP", $userName);
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.price");
@@ -67,7 +67,7 @@ class Detil_penjualan extends MY_Controller {
         $userName->set_EDITABLE(FALSE);
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Price", $userName);
+        $this->_CFG->add_column("Harga", $userName);
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.qty");
@@ -91,13 +91,13 @@ class Detil_penjualan extends MY_Controller {
         $userName->set_EDITABLE(FALSE);
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Amount", $userName);
+        $this->_CFG->add_column("Jumlah", $userName);
         
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.description");
         $grupUser->set_SIZE(128);
         $grupUser->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $grupUser);
+        $this->_CFG->add_column("Deskripsi", $grupUser);
 
         $this->_CFG->add_grid_button("UBAH", array());
     }
@@ -147,7 +147,7 @@ class Detil_penjualan extends MY_Controller {
             $grupUser->set_SIZE(4);
             $grupUser->set_REQUIRED(TRUE);
             $grupUser->set_FORM_ID("product_id");
-            $this->_CFG->add_column("Product", $grupUser);
+            $this->_CFG->add_column("Produk", $grupUser);
             
 //            $rsSup = $this->base_model->list_data("id as kunci, concat_ws(' - ', supplier_code, supplier_name) as nilai", "supplier", "", array('status' => 1), array("supplier_name asc"), "", "", "", FALSE);
             $rsSup = array();
@@ -171,7 +171,7 @@ class Detil_penjualan extends MY_Controller {
             $this->_CFG->add_column("Unit", $grupUser);
         } else {
             $grupUser = new Datagridcolumn();
-            $this->_CFG->add_column("Product", $grupUser);
+            $this->_CFG->add_column("Produk", $grupUser);
             
             $grupUser = new Datagridcolumn();
             $this->_CFG->add_column("Supplier", $grupUser);

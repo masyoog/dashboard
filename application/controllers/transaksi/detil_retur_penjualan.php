@@ -40,13 +40,13 @@ class Detil_retur_penjualan extends MY_Controller {
         $nama->set_FIELD_DB_ALIAS("product");
         $nama->set_FORM_ID("product");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Product", $nama);
+        $this->_CFG->add_column("Produk", $nama);
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.description");
         $grupUser->set_SIZE(128);
         $grupUser->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $grupUser);
+        $this->_CFG->add_column("Deskripsi", $grupUser);
 
 //        $userName = new Datagridcolumn();
 //        $userName->set_FIELD_DB("a.item_price");
@@ -120,10 +120,10 @@ class Detil_retur_penjualan extends MY_Controller {
             $grupUser->set_SIZE(4);
             $grupUser->set_REQUIRED(TRUE);
             $grupUser->set_FORM_ID("product_id");
-            $this->_CFG->add_column("Product", $grupUser);
+            $this->_CFG->add_column("Produk", $grupUser);
         } else {
             $grupUser = new Datagridcolumn();
-            $this->_CFG->add_column("Product", $grupUser);
+            $this->_CFG->add_column("Produk", $grupUser);
         }
 
         $dg->set_config($this->_CFG);

@@ -45,7 +45,7 @@ class Pembelian extends MY_Controller {
         $nama->set_DEFAULT_SEARCH_WITH_IGNORE_OPTION(TRUE);
         $nama->set_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE("1");
         $nama->set_FORM_ID("create_at");
-        $this->_CFG->add_column("Created Date", $nama);
+        $this->_CFG->add_column("Tanggal Dibuat", $nama);
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.no_po");
@@ -60,7 +60,7 @@ class Pembelian extends MY_Controller {
         $userName->set_SIZE(255);
         
         $userName->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $userName);
+        $this->_CFG->add_column("Deskripsi", $userName);
 
 
         $grupUser = new Datagridcolumn();
@@ -69,7 +69,7 @@ class Pembelian extends MY_Controller {
         $grupUser->set_SIZE(4);
         $grupUser->set_FORM_ID("supplier_name");
         $grupUser->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Supplier Name", $grupUser);
+        $this->_CFG->add_column("Nama Supplier", $grupUser);
         
         $status = new Datagridcolumn();
         $status->set_FIELD_DB("a.payment_status");
@@ -85,7 +85,7 @@ class Pembelian extends MY_Controller {
                     "1" => '<span class="label label-success">Done</span>'
         ));
         $status->set_SIZE(1);
-        $this->_CFG->add_column("Payment Status", $status);
+        $this->_CFG->add_column("Status Pembayaran", $status);
         
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.payment_duedate");
@@ -93,7 +93,7 @@ class Pembelian extends MY_Controller {
         $grupUser->set_FIELD_TYPE($grupUser->get_DATE_TYPE());
         $grupUser->set_FORM_ID("payment_duedate");
         $grupUser->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Payment Duedate", $grupUser);
+        $this->_CFG->add_column("Jatuh Tempo Pembayaran", $grupUser);
 
         $status = new Datagridcolumn();
         $status->set_FIELD_DB("a.status");
@@ -116,7 +116,7 @@ class Pembelian extends MY_Controller {
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.nama");
         $nama->set_FORM_ID("create_by");
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat oleh", $nama);
 
 //        $this->_CFG->add_grid_button(
 //                "Cetak PO", array(
@@ -192,10 +192,10 @@ class Pembelian extends MY_Controller {
         }
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created Date", $nama);
+        $this->_CFG->add_column("Tanggal Dibuat", $nama);
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat oleh", $nama);
 
 //        if ($mode == "add") {
         $status = new Datagridcolumn();

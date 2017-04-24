@@ -45,7 +45,7 @@ class Penjualan extends MY_Controller {
         $nama->set_DEFAULT_SEARCH_WITH_IGNORE_OPTION(TRUE);
         $nama->set_DEFAULT_SEARCH_IGNORE_OPTION_DEFAULT_VALUE("1");
         $nama->set_FORM_ID("order_date");
-        $this->_CFG->add_column("Order Date", $nama);
+        $this->_CFG->add_column("Tanggal Order", $nama);
         
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.order_code");
@@ -71,7 +71,7 @@ class Penjualan extends MY_Controller {
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.nama");
         $nama->set_FORM_ID("create_by");
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat Oleh", $nama);
 
         $this->_CFG->add_grid_button(
                 "Update Status", array(
@@ -162,10 +162,10 @@ class Penjualan extends MY_Controller {
         }
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Order Date", $nama);
+        $this->_CFG->add_column("Tanggal Order", $nama);
 
         $nama = new Datagridcolumn();
-        $this->_CFG->add_column("Created By", $nama);
+        $this->_CFG->add_column("Dibuat Oleh", $nama);
 
         $dg->set_config($this->_CFG);
         

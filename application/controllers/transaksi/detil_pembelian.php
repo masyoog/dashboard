@@ -40,13 +40,13 @@ class Detil_pembelian extends MY_Controller {
         $nama->set_FIELD_DB_ALIAS("product");
         $nama->set_FORM_ID("product");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Product", $nama);
+        $this->_CFG->add_column("Produk", $nama);
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.description");
         $grupUser->set_SIZE(128);
         $grupUser->set_FORM_ID("description");
-        $this->_CFG->add_column("Description", $grupUser);
+        $this->_CFG->add_column("Deskripsi", $grupUser);
 
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.item_price");
@@ -54,7 +54,7 @@ class Detil_pembelian extends MY_Controller {
         $userName->set_FORM_ID("item_price");
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Item Price", $userName);
+        $this->_CFG->add_column("Harga Item", $userName);
 
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.qty");
@@ -70,7 +70,7 @@ class Detil_pembelian extends MY_Controller {
         $userName->set_FORM_ID("total_price");
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Total Price", $userName);
+        $this->_CFG->add_column("Total Harga", $userName);
     }
 
     function index($id_po = "null") {
