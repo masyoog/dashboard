@@ -51,7 +51,7 @@ class Update_penjualan extends MY_Controller {
                         "disc" => $disc, 
                         "netto" => $pay,
                         "remark" => $remark,
-                        "status" => $close_po), 
+                        "status" => ($close_po < 1 ? 1 : $close_po) ), 
                     array("id" => $key));
             if ($updatePo > 0) {
                 $this->auditrail("Update Order", $updatePo);
