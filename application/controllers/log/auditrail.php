@@ -39,17 +39,17 @@ class Auditrail extends MY_Controller {
         $menu->set_FIELD_DB("a.log_date");
         $menu->set_FORM_ID("log_date");
         $menu->set_FIELD_TYPE($menu->get_DATE_TYPE());
-        $this->_CFG->add_column("Date Logged", $menu);
+        $this->_CFG->add_column("Tanggal Log", $menu);
         
         $menu = new Datagridcolumn();
         $menu->set_FIELD_DB("a.log_time");
         $menu->set_FORM_ID("log_time");
-        $this->_CFG->add_column("Time Logged", $menu);
+        $this->_CFG->add_column("Waktu Log", $menu);
         
         $menu = new Datagridcolumn();
         $menu->set_FIELD_DB("b.nama");
         $menu->set_FORM_ID("nama");
-        $this->_CFG->add_column("Name", $menu);
+        $this->_CFG->add_column("Nama User", $menu);
         
         $menu = new Datagridcolumn();
         $menu->set_FIELD_DB("a.log_event");
@@ -59,12 +59,12 @@ class Auditrail extends MY_Controller {
         $menu = new Datagridcolumn();
         $menu->set_FIELD_DB("a.log_object");
         $menu->set_FORM_ID("log_object");
-        $this->_CFG->add_column("Object", $menu);
+        $this->_CFG->add_column("Lokasi", $menu);
         
         $menu = new Datagridcolumn();
         $menu->set_FIELD_DB("a.log_ref_key");
         $menu->set_FORM_ID("log_ref_key");
-        $this->_CFG->add_column("Reff Key", $menu);
+        $this->_CFG->add_column("ID Reff", $menu);
         
         
         $this->_CFG->add_COMMAND_BUTTON(

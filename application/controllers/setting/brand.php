@@ -38,7 +38,7 @@ class Brand extends MY_Controller {
         $nama->set_SIZE(30);
         $nama->set_FORM_ID("name");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Name", $nama);
+        $this->_CFG->add_column("Nama", $nama);
 
 
         $status = new Datagridcolumn();

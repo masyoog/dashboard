@@ -45,7 +45,7 @@ class Prefix extends MY_Controller {
         $nama->set_SIZE(30);
         $nama->set_FORM_ID("brands");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Brand", $nama);
+        $this->_CFG->add_column("Operator", $nama);
         
     }
 
@@ -75,7 +75,7 @@ class Prefix extends MY_Controller {
         $grupUser->set_SIZE(4);
         $grupUser->set_REQUIRED(TRUE);
         $grupUser->set_FORM_ID("brand_id");
-        $this->_CFG->add_column("Brand", $grupUser);
+        $this->_CFG->add_column("Operator", $grupUser);
 
         $dg->set_config($this->_CFG);
 

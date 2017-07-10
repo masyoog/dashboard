@@ -38,21 +38,21 @@ class Supplier extends MY_Controller {
         $nama->set_SIZE(30);
         $nama->set_FORM_ID("supplier_code");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Supplier Code", $nama);
+        $this->_CFG->add_column("Kode Supplier", $nama);
 
         $keterangan = new Datagridcolumn();
         $keterangan->set_FIELD_DB("a.supplier_name");
         $keterangan->set_SIZE(100);
         $keterangan->set_FORM_ID("supplier_name");
         $keterangan->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Supplier Name", $keterangan);
+        $this->_CFG->add_column("Nama Supplier", $keterangan);
 
         $keterangan = new Datagridcolumn();
         $keterangan->set_FIELD_DB("a.supplier_pin");
         $keterangan->set_SIZE(20);
         $keterangan->set_FORM_ID("supplier_pin");
         $keterangan->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Supplier PIN", $keterangan);
+        $this->_CFG->add_column("PIN", $keterangan);
 
         $status = new Datagridcolumn();
         $status->set_FIELD_DB("a.status");

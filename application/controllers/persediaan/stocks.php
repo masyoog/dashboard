@@ -114,7 +114,7 @@ class Stocks extends MY_Controller {
 
         if ($key == "") {
             $userName = new Datagridcolumn();
-            $this->_CFG->add_column("PO No", $userName);
+            $this->_CFG->add_column("No PO", $userName);
         }
 
         $nama = new Datagridcolumn();

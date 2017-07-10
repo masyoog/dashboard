@@ -43,14 +43,14 @@ class Produk extends MY_Controller {
         $userName->set_FORM_ID("code");
         $userName->set_REQUIRED(TRUE);
         $userName->set_VALIDATION("is_unique[product.code]");
-        $this->_CFG->add_column("Code", $userName);
+        $this->_CFG->add_column("Kode Produk", $userName);
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("a.name");
         $nama->set_SIZE(60);
         $nama->set_FORM_ID("name");
         $nama->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Name", $nama);
+        $this->_CFG->add_column("Nama", $nama);
 
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("b.provider_name");
@@ -62,7 +62,7 @@ class Produk extends MY_Controller {
         $grupUser->set_FIELD_DB("d.type_name");
         $grupUser->set_SIZE(4);
         $grupUser->set_FORM_ID("type_name");
-        $this->_CFG->add_column("Product Type", $grupUser);
+        $this->_CFG->add_column("Tipe Produk", $grupUser);
         
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("c.unit_name");
@@ -75,7 +75,7 @@ class Produk extends MY_Controller {
         $grupUser->set_SIZE(9);
         $grupUser->set_FORM_ID("price");
         $grupUser->set_FIELD_TYPE($grupUser->get_NUM_TYPE());
-        $this->_CFG->add_column("Price", $grupUser);
+        $this->_CFG->add_column("Harga", $grupUser);
         
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.barcode");
@@ -121,11 +121,11 @@ class Produk extends MY_Controller {
 
         $dg = new Datagrid();
         $grupUser = new Datagridcolumn();
-        $this->_CFG->add_column("Product Type", $grupUser);
+        $this->_CFG->add_column("Tipe Produk", $grupUser);
 
         if ( $key != "" ){
             $userName = new Datagridcolumn();
-            $this->_CFG->add_column("Code", $userName);
+            $this->_CFG->add_column("Kode Produk", $userName);
         }
         
         $rsGrup = $this->base_model->list_data("id as kunci, provider_name as nilai", "provider", "", array('status' => 1), array("provider_name asc"));

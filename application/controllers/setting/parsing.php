@@ -41,7 +41,6 @@ class Parsing extends MY_Controller {
         $nama->set_FIELD_DB_ALIAS("product");
         $nama->set_FORM_ID("brand");
         $nama->set_REQUIRED(TRUE);
-
         $this->_CFG->add_column("Produk", $nama);
 
         $grupUser = new Datagridcolumn();
@@ -56,14 +55,14 @@ class Parsing extends MY_Controller {
         $userName->set_FORM_ID("pprice");
         $userName->set_FIELD_TYPE($userName->get_NUM_TYPE());
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("PPrice", $userName);
+        $this->_CFG->add_column("Harga Produk", $userName);
 
         $userName = new Datagridcolumn();
         $userName->set_FIELD_DB("a.order_code");
         $userName->set_SIZE(20);
         $userName->set_FORM_ID("order_code");
         $userName->set_REQUIRED(TRUE);
-        $this->_CFG->add_column("Order Code", $userName);
+        $this->_CFG->add_column("Kode Order", $userName);
 
         
     }

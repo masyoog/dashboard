@@ -42,7 +42,7 @@ class Provider extends MY_Controller {
         $userName->set_FORM_ID("provider_name");
         $userName->set_REQUIRED(TRUE);
 //        $userName->set_VALIDATION("is_unique[product.code]");
-        $this->_CFG->add_column("Provider Name", $userName);
+        $this->_CFG->add_column("Nama Provider", $userName);
 
         $nama = new Datagridcolumn();
         $nama->set_FIELD_DB("c.name");
@@ -55,7 +55,7 @@ class Provider extends MY_Controller {
         $grupUser->set_FIELD_DB("d.type_name");
         $grupUser->set_SIZE(4);
         $grupUser->set_FORM_ID("type_name");
-        $this->_CFG->add_column("Product Type", $grupUser);
+        $this->_CFG->add_column("Tipe Produk", $grupUser);
         
 
         $status = new Datagridcolumn();
@@ -114,7 +114,7 @@ class Provider extends MY_Controller {
         $grupUser->set_SIZE(4);
         $grupUser->set_REQUIRED(TRUE);
         $grupUser->set_FORM_ID("ptype_id");
-        $this->_CFG->add_column("Product Type", $grupUser);
+        $this->_CFG->add_column("Tipe Produk", $grupUser);
 
         $dg->set_config($this->_CFG);
 
