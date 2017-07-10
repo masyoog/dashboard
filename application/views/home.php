@@ -22,7 +22,7 @@
                 <div class="icon">
                     <i class="ion ion-bag"></i>
                 </div>
-                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Order+Date&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=NEW" ?>" class="small-box-footer">
+                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Tanggal+Order&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=NEW" ?>" class="small-box-footer">
                     More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -41,7 +41,7 @@
                 <div class="icon">
                     <i class="ion ion-stats-bars"></i>
                 </div>
-                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Order+Date&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=PAID" ?>" class="small-box-footer">
+                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Tanggal+Order&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=PAID" ?>" class="small-box-footer">
                     More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -60,7 +60,7 @@
                 <div class="icon">
                     <i class="ion ion-person-add"></i>
                 </div>
-                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Order+Date&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=PAID" ?>" class="small-box-footer">
+                <a target="_blank" href="<?php echo base_url("transaksi/penjualan") . "?srcCtrlEnableorder_date=1&srcEnable%5Border_date%5D=1&srcKolom%5B%5D=Tanggal+Order&srcOperan%5B%5D=DIANTARA&srcCari%5B%5D=01%2F03%2F2017+-+19%2F03%2F2017&srcKolom%5B%5D=Status&srcOperan%5B%5D=%3D&srcCari%5B%5D=PAID" ?>" class="small-box-footer">
                     More info <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
