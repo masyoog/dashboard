@@ -146,7 +146,6 @@ class Penjualan extends MY_Controller {
         $dg = new Datagrid();
 
         $rsGrup = $this->base_model->list_data("id as kunci, name as nilai", "order_state", "", "", array("id asc"));
-
         $grupUser = new Datagridcolumn();
         $grupUser->set_FIELD_DB("a.status");
         $grupUser->set_FIELD_TYPE($grupUser->get_ENUM_TYPE());
