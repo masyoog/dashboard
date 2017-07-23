@@ -49,8 +49,8 @@ $active_record = TRUE;
 
 
 $db['production']['hostname'] = 'localhost';
-$db['production']['username'] = 'root';
-$db['production']['password'] = '08521Tiga';
+$db['production']['username'] = 'app';
+$db['production']['password'] = '';
 $db['production']['database'] = 'mrs_db';
 $db['production']['dbdriver'] = 'mysqli';
 $db['production']['dbprefix'] = '';
