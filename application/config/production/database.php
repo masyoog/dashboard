@@ -50,7 +50,7 @@ $active_record = TRUE;
 
 $db['production']['hostname'] = 'localhost';
 $db['production']['username'] = 'root';
-$db['production']['password'] = 'rahasia';
+$db['production']['password'] = '08521Tiga';
 $db['production']['database'] = 'mrs_db';
 $db['production']['dbdriver'] = 'mysqli';
 $db['production']['dbprefix'] = '';
